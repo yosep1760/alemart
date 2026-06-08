@@ -3,6 +3,7 @@ include '../../auth/auth_check.php';
 require_once '../../config/config.php';
 require_once '../../config/koneksi.php';
 
+$page_title = 'Daftar User';
 $page = 'users';
 
 /* ========================= PAGINATION ========================= */
@@ -38,231 +39,207 @@ $query = mysqli_query(
 $where ORDER BY id_user DESC LIMIT 
 $limit OFFSET $offset"
 );
+
+include '../../includes/header.php';
+include '../../includes/navbar.php';
+include '../../includes/sidebar.php';
 ?>
+<div class="main-content">
 
-
-<!DOCTYPE html>
-<html lang="id">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <title>Kelola User | AleMart</title>
-
-    <!-- Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Bootstrap Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.css" rel="stylesheet">
-
-    <!-- CSS Custom -->
-    <link rel="stylesheet" href="<?= BASE_URL; ?>/assets/css/style.css">
-</head>
-
-<body>
-    <?php
-    include '../../includes/navbar.php';
-    include '../../includes/sidebar.php';
-    ?>
-    <div class="main-content">
-
-        <!-- HEADER -->
-        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
-            <div>
-                <h2 class="fw-bold mb-1"> Data User </h2>
-                <p class="text-muted mb-0"> Kelola semua user AleMart </p>
-            </div>
-
-            <a href="tambah.php" class="btn btn-success">
-                <i class="bi bi-plus-lg"></i> Tambah User
-            </a>
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+        <div>
+            <h2 class="fw-bold mb-1"> Data User </h2>
+            <p class="text-muted mb-0"> Kelola semua user AleMart </p>
         </div>
 
-        <!-- CARD -->
-        <div class="card border-0 shadow-sm rounded-4">
-            <div class="card-body">
-
-                <!-- FILTER -->
-                <form method="GET" class="row g-3 mb-4" id="filterForm">
-
-                    <!-- SEARCH -->
-                    <div class="col-md-9">
-                        <div class="input-group">
-                            <span class="input-group-text bg-white border-end-0">
-                                <i class="bi bi-search"></i>
-                            </span>
-
-                            <input type="text"
-                                name="search"
-                                id="searchInput"
-                                class="form-control border-start-0"
-                                placeholder="Cari nama atau username..."
-                                value="<?= htmlspecialchars($search); ?>">
-                        </div>
-                    </div>
-
-                    <!-- FILTER ROLE -->
-                    <div class="col-md-3">
-                        <select name="role"
-                            id="roleFilter"
-                            class="form-select">
-                            <option value=""> Semua Role </option>
-                            <option value="admin" <?= ($role == 'admin') ? 'selected' : ''; ?>> Admin </option>
-                            <option value="kasir" <?= ($role == 'kasir') ? 'selected' : ''; ?>> Kasir </option>
-                        </select>
-                    </div>
-                </form>
-
-                <!-- TABLE -->
-                <div class="table-responsive">
-                    <table class="table align-middle">
-                        <thead>
-                            <tr>
-                                <th>No</th>
-                                <th>User</th>
-                                <th>Username</th>
-                                <th>Role</th>
-                                <th class="text-center"> Action </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php if (mysqli_num_rows($query) > 0): ?>
-                                <?php $no = $offset + 1;
-                                while ($user = mysqli_fetch_assoc($query)): ?>
-                                    <tr>
-                                        <td> <?= $no++; ?> </td>
-                                        <td>
-                                            <div class="d-flex align-items-center gap-3">
-
-                                                <!-- AVATAR -->
-                                                <?php if (!empty($user['avatar'])): ?>
-
-                                                    <img
-                                                        src="<?= BASE_URL; ?>/assets/uploads/avatar/<?= $user['avatar']; ?>"
-                                                        alt="Avatar"
-                                                        class="rounded-circle object-fit-cover border border-2 border-success"
-                                                        style="width: 48px; height: 48px;">
-
-                                                <?php else: ?>
-
-                                                    <div
-                                                        class="rounded-circle bg-success text-white 
-                                                        fw-bold d-flex align-items-center justify-content-center shadow-sm"
-                                                        style=" width: 48px; height: 48px; min-width: 48px; font-size: 16px;">
-
-                                                        <?= strtoupper(substr($user['nama'], 0, 1)); ?>
-
-                                                    </div>
-
-                                                <?php endif; ?>
-
-
-                                                <div>
-                                                    <div class="fw-semibold">
-                                                        <?= $user['nama']; ?> </div>
-                                                    <small class="text-muted"> ID: <?= $user['id_user']; ?> </small>
-                                                </div>
-                                            </div>
-                                        </td>
-
-                                        <td>
-                                            <?= $user['username']; ?>
-                                        </td>
-
-                                        <td>
-                                            <span class="badge rounded-pill 
-                                        <?= ($user['role'] == 'admin') ? 'bg-success' : 'bg-primary'; ?>">
-                                                <?= ucfirst($user['role']); ?>
-                                            </span>
-                                        </td>
-
-                                        <td>
-                                            <div class="d-flex justify-content-center gap-2">
-                                                <?php if ($user['id_user'] !== $_SESSION['id_user']): ?>
-                                                    <!-- EDIT -->
-                                                    <a href="edit.php?id=<?= $user['id_user']; ?>" class="btn btn-warning btn-sm">
-                                                        <i class="bi bi-pencil-square"></i>
-                                                    </a>
-
-                                                    <!-- DELETE -->
-                                                    <a href="hapus.php?id=<?= $user['id_user']; ?>" class="btn btn-danger btn-sm"
-                                                        onclick="return confirm('Yakin ingin menghapus user ini?')">
-                                                        <i class="bi bi-trash"></i>
-                                                    </a>
-                                                <?php else : ?>
-
-                                                    <span class="badge bg-secondary-subtle text-secondary border">
-                                                        Akun Anda
-                                                    </span>
-
-                                                <?php endif; ?>
-                                            </div>
-
-                                        </td>
-
-                                    </tr>
-
-                                <?php endwhile; ?> <?php else: ?> <tr>
-                                    <td colspan="5" class="text-center py-5 text-muted">
-                                        <i class="bi bi-inbox fs-1 d-block mb-2"></i>
-                                        Data user tidak ditemukan
-                                    </td>
-
-                                </tr> <?php endif; ?>
-                        </tbody>
-                    </table>
-
-                </div>
-
-                <!-- PAGINATION -->
-                <?php if ($total_pages > 1): ?>
-                    <nav class="mt-4">
-                        <ul class="pagination justify-content-end">
-                            <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-                                <li class="page-item <?= ($current_page == $i) ? 'active' : ''; ?>">
-                                    <a class="page-link" href="?page_num=<?= $i; ?>&search=<?= $search; ?>&role=<?= $role; ?>"> <?= $i; ?>
-                                    </a>
-                                </li>
-                            <?php endfor; ?>
-                        </ul>
-                    </nav> <?php endif; ?>
-            </div>
-        </div>
+        <a href="tambah.php" class="btn btn-success">
+            <i class="bi bi-plus-lg"></i> Tambah User
+        </a>
     </div>
 
-    <?php
-    include '../../includes/footer.php';
-    ?>
+    <!-- CARD -->
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-body">
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../../assets/js/script.js"></script>
+            <!-- FILTER -->
+            <form method="GET" class="row g-3 mb-4" id="filterForm">
 
-    <script>
-        const filterForm = document.getElementById("filterForm");
-        const searchInput = document.getElementById("searchInput");
-        const roleFilter = document.getElementById("roleFilter");
+                <!-- SEARCH -->
+                <div class="col-md-9">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0">
+                            <i class="bi bi-search"></i>
+                        </span>
 
-        /* =========================
-           AUTO SEARCH
-        ========================= */
-        let searchTimer;
+                        <input type="text"
+                            name="search"
+                            id="searchInput"
+                            class="form-control border-start-0"
+                            placeholder="Cari nama atau username..."
+                            value="<?= htmlspecialchars($search); ?>">
+                    </div>
+                </div>
 
-        searchInput.addEventListener("input", () => {
-            clearTimeout(searchTimer);
+                <!-- FILTER ROLE -->
+                <div class="col-md-3">
+                    <select name="role"
+                        id="roleFilter"
+                        class="form-select">
+                        <option value=""> Semua Role </option>
+                        <option value="admin" <?= ($role == 'admin') ? 'selected' : ''; ?>> Admin </option>
+                        <option value="kasir" <?= ($role == 'kasir') ? 'selected' : ''; ?>> Kasir </option>
+                    </select>
+                </div>
+            </form>
 
-            searchTimer = setTimeout(() => {
-                filterForm.submit();
-            }, 500);
-        });
+            <!-- TABLE -->
+            <div class="table-responsive">
+                <table class="table align-middle">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>User</th>
+                            <th>Username</th>
+                            <th>Role</th>
+                            <th class="text-center"> Action </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if (mysqli_num_rows($query) > 0): ?>
+                            <?php $no = $offset + 1;
+                            while ($user = mysqli_fetch_assoc($query)): ?>
+                                <tr>
+                                    <td> <?= $no++; ?> </td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-3">
 
-        /* =========================
-           AUTO FILTER
-        ========================= */
-        roleFilter.addEventListener("change", () => {
+                                            <!-- AVATAR -->
+                                            <?php if (!empty($user['avatar'])): ?>
+
+                                                <img
+                                                    src="<?= BASE_URL; ?>/assets/uploads/avatar/<?= $user['avatar']; ?>"
+                                                    alt="Avatar"
+                                                    class="rounded-circle object-fit-cover border border-2 border-success"
+                                                    style="width: 48px; height: 48px;">
+
+                                            <?php else: ?>
+
+                                                <div
+                                                    class="rounded-circle bg-success text-white 
+                                                        fw-bold d-flex align-items-center justify-content-center shadow-sm"
+                                                    style=" width: 48px; height: 48px; min-width: 48px; font-size: 16px;">
+
+                                                    <?= strtoupper(substr($user['nama'], 0, 1)); ?>
+
+                                                </div>
+
+                                            <?php endif; ?>
+
+
+                                            <div>
+                                                <div class="fw-semibold">
+                                                    <?= $user['nama']; ?> </div>
+                                                <small class="text-muted"> ID: <?= $user['id_user']; ?> </small>
+                                            </div>
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <?= $user['username']; ?>
+                                    </td>
+
+                                    <td>
+                                        <span class="badge rounded-pill 
+                                        <?= ($user['role'] == 'admin') ? 'bg-success' : 'bg-primary'; ?>">
+                                            <?= ucfirst($user['role']); ?>
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        <div class="d-flex justify-content-center gap-2">
+                                            <?php if ($user['id_user'] !== $_SESSION['id_user']): ?>
+                                                <!-- EDIT -->
+                                                <a href="edit.php?id=<?= $user['id_user']; ?>" class="btn btn-warning btn-sm">
+                                                    <i class="bi bi-pencil-square"></i>
+                                                </a>
+
+                                                <!-- DELETE -->
+                                                <a href="hapus.php?id=<?= $user['id_user']; ?>" class="btn btn-danger btn-sm"
+                                                    onclick="return confirm('Yakin ingin menghapus user ini?')">
+                                                    <i class="bi bi-trash"></i>
+                                                </a>
+                                            <?php else : ?>
+
+                                                <span class="badge bg-secondary-subtle text-secondary border">
+                                                    Akun Anda
+                                                </span>
+
+                                            <?php endif; ?>
+                                        </div>
+
+                                    </td>
+
+                                </tr>
+
+                            <?php endwhile; ?> <?php else: ?> <tr>
+                                <td colspan="5" class="text-center py-5 text-muted">
+                                    <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                                    Data user tidak ditemukan
+                                </td>
+
+                            </tr> <?php endif; ?>
+                    </tbody>
+                </table>
+
+            </div>
+
+            <!-- PAGINATION -->
+            <?php if ($total_pages > 1): ?>
+                <nav class="mt-4">
+                    <ul class="pagination justify-content-end">
+                        <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                            <li class="page-item <?= ($current_page == $i) ? 'active' : ''; ?>">
+                                <a class="page-link" href="?page_num=<?= $i; ?>&search=<?= $search; ?>&role=<?= $role; ?>"> <?= $i; ?>
+                                </a>
+                            </li>
+                        <?php endfor; ?>
+                    </ul>
+                </nav> <?php endif; ?>
+        </div>
+    </div>
+</div>
+
+<?php
+include '../../includes/footer.php';
+?>
+
+<script>
+    const filterForm = document.getElementById("filterForm");
+    const searchInput = document.getElementById("searchInput");
+    const roleFilter = document.getElementById("roleFilter");
+
+    /* =========================
+       AUTO SEARCH
+    ========================= */
+    let searchTimer;
+
+    searchInput.addEventListener("input", () => {
+        clearTimeout(searchTimer);
+
+        searchTimer = setTimeout(() => {
             filterForm.submit();
-        });
-    </script>
-</body>
+        }, 500);
+    });
 
-</html>
+    /* =========================
+       AUTO FILTER
+    ========================= */
+    roleFilter.addEventListener("change", () => {
+        filterForm.submit();
+    });
+</script>
+
+<?php
+include '../../includes/footer_script.php';
+?>

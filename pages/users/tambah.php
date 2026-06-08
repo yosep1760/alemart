@@ -3,221 +3,219 @@ include '../../auth/auth_check.php';
 require_once '../../config/config.php';
 require_once '../../config/koneksi.php';
 
+$page_title = 'Tambah User';
 $page = 'users';
+
+include '../../includes/header.php';
+include '../../includes/navbar.php';
+include '../../includes/sidebar.php';
 ?>
 
-<!DOCTYPE html>
-<html lang="id">
+<div class="main-content">
 
-<head>
+    <!-- PAGE HEADER -->
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+        <div>
 
-    <title>Tambah User | AleMart</title>
+            <h2 class="fw-bold mb-1">
+                Tambah User
+            </h2>
 
-    <!-- Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Bootstrap Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.css" rel="stylesheet">
-
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="<?= BASE_URL; ?>/assets/css/style.css">
-
-</head>
-
-<body>
-
-    <?php
-    include '../../includes/navbar.php';
-    include '../../includes/sidebar.php';
-    ?>
-
-    <div class="main-content">
-
-        <!-- PAGE HEADER -->
-        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
-
-            <div>
-
-                <h2 class="fw-bold mb-1">
-                    Tambah User
-                </h2>
-
-                <p class="text-muted mb-0">
-                    Tambahkan akun user baru ke sistem AleMart
-                </p>
-
-            </div>
-
-            <a href="index.php"
-                class="btn btn-light border">
-
-                <i class="bi bi-arrow-left"></i>
-                Kembali
-
-            </a>
+            <p class="text-muted mb-0">
+                Tambahkan akun user baru ke sistem AleMart
+            </p>
 
         </div>
 
-        <!-- FORM -->
-        <form
-            action="proses_tambah.php"
-            method="POST"
-            enctype="multipart/form-data">
+        <a href="index.php"
+            class="btn btn-light border">
 
-            <!-- CARD DATA USER -->
-            <div class="card border-0 shadow-sm rounded-4 mb-4">
+            <i class="bi bi-arrow-left"></i>
+            Kembali
 
-                <div class="card-body p-4">
+        </a>
 
-                    <div class="d-flex align-items-center gap-2 mb-4">
+    </div>
 
-                        <div class="bg-success bg-opacity-10 text-success rounded-3 d-flex align-items-center justify-content-center"
-                            style="width:44px; height:44px;">
+    <!-- FORM -->
+    <form
+        action="proses_tambah.php"
+        method="POST"
+        enctype="multipart/form-data">
 
-                            <i class="bi bi-person-plus fs-5"></i>
+        <!-- CARD DATA USER -->
+        <div class="card border-0 shadow-sm rounded-4 mb-4">
 
-                        </div>
+            <div class="card-body p-4">
 
-                        <div>
+                <div class="d-flex align-items-center gap-2 mb-4">
 
-                            <h5 class="fw-bold mb-0">
-                                Data User
-                            </h5>
+                    <div class="bg-success bg-opacity-10 text-success rounded-3 d-flex align-items-center justify-content-center"
+                        style="width:44px; height:44px;">
 
-                            <small class="text-muted">
-                                Isi data user dengan benar
-                            </small>
+                        <i class="bi bi-person-plus fs-5"></i>
+
+                    </div>
+
+                    <div>
+
+                        <h5 class="fw-bold mb-0">
+                            Data User
+                        </h5>
+
+                        <small class="text-muted">
+                            Isi data user dengan benar
+                        </small>
+
+                    </div>
+
+                </div>
+                <?php if (isset($_SESSION['error'])) : ?>
+
+                    <div class="alert alert-danger">
+
+                        <?= $_SESSION['error']; ?>
+
+                    </div>
+
+                <?php
+                    unset($_SESSION['error']);
+                endif;
+                ?>
+
+
+                <div class="row g-4">
+
+                    <!-- NAMA -->
+                    <div class="col-md-6">
+
+                        <label class="form-label fw-semibold">
+                            Nama Lengkap
+                        </label>
+
+                        <input
+                            type="text"
+                            name="nama"
+                            class="form-control"
+                            placeholder="Masukkan nama lengkap"
+                            required>
+
+                    </div>
+
+                    <!-- USERNAME -->
+                    <div class="col-md-6">
+
+                        <label class="form-label fw-semibold">
+                            Username
+                        </label>
+
+                        <input
+                            type="text"
+                            name="username"
+                            class="form-control"
+                            placeholder="Masukkan username"
+                            required>
+
+                    </div>
+
+                    <!-- PASSWORD -->
+                    <div class="col-md-6">
+
+                        <label class="form-label fw-semibold">
+                            Password
+                        </label>
+
+                        <div class="input-group">
+
+                            <input
+                                type="password"
+                                name="password"
+                                id="password"
+                                class="form-control"
+                                placeholder="Masukkan password"
+                                required>
+
+                            <button
+                                class="btn btn-outline-secondary"
+                                type="button"
+                                id="togglePassword">
+
+                                <i class="bi bi-eye"></i>
+
+                            </button>
 
                         </div>
 
                     </div>
-                    <?php if (isset($_SESSION['error'])) : ?>
 
-                        <div class="alert alert-danger">
+                    <!-- ROLE -->
+                    <div class="col-md-6">
 
-                            <?= $_SESSION['error']; ?>
+                        <label class="form-label fw-semibold">
+                            Role
+                        </label>
 
-                        </div>
+                        <select
+                            name="role"
+                            class="form-select"
+                            required>
 
-                    <?php
-                        unset($_SESSION['error']);
-                    endif;
-                    ?>
+                            <option value="">
+                                Pilih Role
+                            </option>
+
+                            <option value="admin">
+                                Admin
+                            </option>
+
+                            <option value="kasir">
+                                Kasir
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <!-- AVATAR -->
+                    <div class="col-6">
+
+                        <label class="form-label fw-semibold">
+                            Avatar User
+                        </label>
+
+                        <!-- PREVIEW -->
+                        <div class="mb-3">
+
+                            <!-- preview img -->
+                            <img
+                                id="avatarPreview"
+                                src=""
+                                class="rounded-circle border object-fit-cover d-none"
+                                style="width: 90px; height: 90px;">
 
 
-                    <div class="row g-4">
-
-                        <!-- NAMA -->
-                        <div class="col-md-6">
-
-                            <label class="form-label fw-semibold">
-                                Nama Lengkap
-                            </label>
-
-                            <input
-                                type="text"
-                                name="nama"
-                                class="form-control"
-                                placeholder="Masukkan nama lengkap"
-                                required>
-
-                        </div>
-
-                        <!-- USERNAME -->
-                        <div class="col-md-6">
-
-                            <label class="form-label fw-semibold">
-                                Username
-                            </label>
-
-                            <input
-                                type="text"
-                                name="username"
-                                class="form-control"
-                                placeholder="Masukkan username"
-                                required>
-
-                        </div>
-
-                        <!-- PASSWORD -->
-                        <div class="col-md-6">
-
-                            <label class="form-label fw-semibold">
-                                Password
-                            </label>
-
-                            <div class="input-group">
-
-                                <input
-                                    type="password"
-                                    name="password"
-                                    id="password"
-                                    class="form-control"
-                                    placeholder="Masukkan password"
-                                    required>
-
-                                <button
-                                    class="btn btn-outline-secondary"
-                                    type="button"
-                                    id="togglePassword">
-
-                                    <i class="bi bi-eye"></i>
-
-                                </button>
-
+                            <!-- default avatar -->
+                            <div
+                                id="avatarDefault"
+                                class="rounded-circle bg-success text-white 
+                                    d-flex align-items-center justify-content-center 
+                                    fw-bold"
+                                style=" width: 90px; height: 90px; font-size: 2rem; ">
+                                <i class="bi bi-person"></i>
                             </div>
-
                         </div>
 
-                        <!-- ROLE -->
-                        <div class="col-md-6">
+                        <input
+                            type="file"
+                            name="avatar"
+                            id="avatarInput"
+                            class="form-control"
+                            accept=".jpg,.jpeg,.png">
 
-                            <label class="form-label fw-semibold">
-                                Role
-                            </label>
-
-                            <select
-                                name="role"
-                                class="form-select"
-                                required>
-
-                                <option value="">
-                                    Pilih Role
-                                </option>
-
-                                <option value="admin">
-                                    Admin
-                                </option>
-
-                                <option value="kasir">
-                                    Kasir
-                                </option>
-
-                            </select>
-
-                        </div>
-
-                        <!-- AVATAR -->
-                        <div class="col-12">
-
-                            <label class="form-label fw-semibold">
-                                Avatar User
-                            </label>
-
-                            <input
-                                type="file"
-                                name="avatar"
-                                class="form-control"
-                                accept=".jpg,.jpeg,.png">
-
-                            <small class="text-muted">
-                                Format: JPG, JPEG, PNG
-                            </small>
-
-                        </div>
+                        <small class="text-muted">
+                            Format: JPG, JPEG, PNG
+                        </small>
 
                     </div>
 
@@ -225,65 +223,81 @@ $page = 'users';
 
             </div>
 
-            <!-- ACTION -->
-            <div class="d-flex gap-2 justify-content-end">
+        </div>
 
-                <button
-                    type="reset"
-                    class="btn btn-light border px-4">
+        <!-- ACTION -->
+        <div class="d-flex gap-2 justify-content-end">
 
-                    Reset
+            <button
+                type="reset"
+                class="btn btn-light border px-4">
 
-                </button>
+                Reset
 
-                <button
-                    type="submit"
-                    class="btn btn-success px-4">
+            </button>
 
-                    <i class="bi bi-check-circle"></i>
-                    Simpan User
+            <button
+                type="submit"
+                class="btn btn-success px-4">
 
-                </button>
+                <i class="bi bi-check-circle"></i>
+                Simpan User
 
-            </div>
+            </button>
 
-        </form>
+        </div>
 
-    </div>
+    </form>
 
-    <?php include '../../includes/footer.php'; ?>
+</div>
 
-    <!-- Bootstrap -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+<?php include '../../includes/footer.php'; ?>
 
-    <!-- SCRIPT -->
-    <script>
-        /* =========================
+<!-- SCRIPT -->
+<script>
+    /* =========================
            TOGGLE PASSWORD
         ========================= */
-        const togglePassword =
-            document.getElementById("togglePassword");
+    const togglePassword =
+        document.getElementById("togglePassword");
 
-        const password =
-            document.getElementById("password");
+    const password =
+        document.getElementById("password");
 
-        togglePassword.addEventListener("click", () => {
+    togglePassword.addEventListener("click", () => {
 
-            const type =
-                password.getAttribute("type") === "password" ?
-                "text" :
-                "password";
+        const type =
+            password.getAttribute("type") === "password" ?
+            "text" :
+            "password";
 
-            password.setAttribute("type", type);
+        password.setAttribute("type", type);
 
-            togglePassword.innerHTML =
-                type === "password" ?
-                '<i class="bi bi-eye"></i>' :
-                '<i class="bi bi-eye-slash"></i>';
+        togglePassword.innerHTML =
+            type === "password" ?
+            '<i class="bi bi-eye"></i>' :
+            '<i class="bi bi-eye-slash"></i>';
 
-        });
-    </script>
+    });
 
-</body>
+    /* ========================= PREVIEW AVATAR ========================= */
+    const avatarInput = document.getElementById('avatarInput');
+    const avatarPreview = document.getElementById('avatarPreview');
+    const avatarDefault = document.getElementById('avatarDefault');
 
-</html>
+    avatarInput.addEventListener('change', function(e) {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                avatarPreview.src = e.target.result;
+                avatarPreview.classList.remove('d-none');
+                avatarDefault.classList.add('d-none');
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
+
+
+<?php include '../../includes/footer_sc.php'; ?>
