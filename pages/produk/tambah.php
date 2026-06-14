@@ -100,7 +100,7 @@ include '../../includes/sidebar.php';
                             <span class="input-group-text bg-light border-0 text-muted px-3 rounded-start-3 fw-medium">Rp</span>
                             <input type="number" name="harga_jual" class="form-control bg-light border-0 py-2.5 fs-6 rounded-end-3 text-dark fw-semibold" placeholder="0" required>
                         </div>
-                    </div>
+                    </div> 
                 </div>
 
                 <div class="row g-3 mb-4">

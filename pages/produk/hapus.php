@@ -38,4 +38,4 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
 
 // Kembalikan halaman otomatis ke index.php setelah proses selesai
 header("Location: index.php");
-exit();
+exit(); 

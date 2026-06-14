@@ -162,4 +162,4 @@ include '../../includes/sidebar.php';
 </div>
 
 <?php include '../../includes/footer.php'; ?>
-<?php include '../../includes/footer_script.php'; ?>
+<?php include '../../includes/footer_script.php'; ?> 

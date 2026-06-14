@@ -113,7 +113,7 @@ include '../../includes/sidebar.php';
                             while ($user = mysqli_fetch_assoc($query)): ?>
                                 <tr>
                                     <td> <?= $no++; ?> </td>
-        
+                                
                                     <td>
                                         <div class="d-flex align-items-center gap-3">
                                             <?php if (!empty($user['avatar'])): ?>
