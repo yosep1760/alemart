@@ -69,6 +69,26 @@ if (
 /* =========================
    HAPUS USER
 ========================= */
+
+/* cek apakah user memiliki transaksi */
+$cek_transaksi = mysqli_query(
+    $conn,
+    "SELECT COUNT(*) as total
+     FROM transaksi
+     WHERE id_user = '$id'"
+);
+
+$data_transaksi = mysqli_fetch_assoc($cek_transaksi);
+
+if ($data_transaksi['total'] > 0) {
+
+    $_SESSION['error'] =
+        "User tidak bisa dihapus karena sudah memiliki transaksi.";
+
+    header("Location: index.php");
+    exit;
+}
+
 $delete = mysqli_query(
     $conn,
     "DELETE FROM users
