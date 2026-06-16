@@ -1,13 +1,13 @@
 <?php
-include '../../auth/auth_check.php';
-require_once '../../config/config.php';
-require_once '../../config/koneksi.php';
+include __DIR__ . '/../../auth/auth_check.php';
+require_once __DIR__ . '/../../config/config.php';
+require_once __DIR__ . '/../../config/koneksi.php';
 
 $page_title = 'Dashboard';
 $page = 'dashboard';
-include '../../includes/header.php';
-include '../../includes/navbar.php';
-include '../../includes/sidebar.php';
+include __DIR__ . '/../../includes/header.php';
+include __DIR__ . '/../../includes/navbar.php';
+include __DIR__ . '/../../includes/sidebar.php';
 
 // Get statistics
 $total_produk = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as total FROM produk"))['total'];
@@ -16,7 +16,6 @@ $total_supplier = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as tot
 $total_transaksi = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as total FROM transaksi WHERE DATE(tanggal_transaksi) = CURDATE()"))['total'];
 $total_pendapatan_hari_ini = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total_harga) as total FROM transaksi WHERE DATE(tanggal_transaksi) = CURDATE()"))['total'];
 $total_pendapatan_hari_ini = $total_pendapatan_hari_ini ? $total_pendapatan_hari_ini : 0;
-
 $stok_tipis_query = mysqli_query($conn, "SELECT nama_produk, stok FROM produk WHERE stok <= 10 ORDER BY stok ASC LIMIT 5");
 ?>
 
@@ -28,7 +27,6 @@ $stok_tipis_query = mysqli_query($conn, "SELECT nama_produk, stok FROM produk WH
         </div>
     </div>
 
-    <!-- Stats Cards -->
     <div class="row g-4 mb-4">
         <div class="col-12 col-sm-6 col-xl-3">
             <div class="card border-0 shadow-sm rounded-4 bg-primary text-white h-100">
@@ -95,7 +93,6 @@ $stok_tipis_query = mysqli_query($conn, "SELECT nama_produk, stok FROM produk WH
         </div>
     </div>
 
-    <!-- Warning / Stok Tipis -->
     <div class="row g-4">
         <div class="col-12 col-xl-6">
             <div class="card border-0 shadow-sm rounded-4 h-100">
@@ -141,6 +138,6 @@ $stok_tipis_query = mysqli_query($conn, "SELECT nama_produk, stok FROM produk WH
 </div>
 
 <?php
-include '../../includes/footer.php';
-include '../../includes/footer_script.php';
+include __DIR__ . '/../../includes/footer.php';
+include __DIR__ . '/../../includes/footer_script.php';
 ?>

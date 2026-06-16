@@ -1,7 +1,7 @@
 <?php
-include '../../auth/auth_check.php';
-require_once '../../config/config.php';
-require_once '../../config/koneksi.php';
+include __DIR__ . '/../../auth/auth_check.php';
+require_once __DIR__ . '/../../config/config.php';
+require_once __DIR__ . '/../../config/koneksi.php';
 
 // PROTEKSI ROLE: Jika bukan admin, tendang keluar
 if ($_SESSION['role'] !== 'admin') {
@@ -32,9 +32,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_FILES['foto_produk']) && $_FILES['foto_produk']['error'] === 0) {
         $ekstensi    = pathinfo($_FILES['foto_produk']['name'], PATHINFO_EXTENSION);
         $foto_produk = time() . '_' . uniqid() . '.' . $ekstensi;
-        if (move_uploaded_file($_FILES['foto_produk']['tmp_name'], '../../assets/uploads/produk/' . $foto_produk)) {
-            if (!empty($data_lama['foto_produk']) && file_exists('../../assets/uploads/produk/' . $data_lama['foto_produk'])) {
-                unlink('../../assets/uploads/produk/' . $data_lama['foto_produk']);
+        
+        // Perbaikan path upload untuk Vercel
+        if (move_uploaded_file($_FILES['foto_produk']['tmp_name'], __DIR__ . '/../../assets/uploads/produk/' . $foto_produk)) {
+            // Perbaikan path unlink untuk Vercel
+            if (!empty($data_lama['foto_produk']) && file_exists(__DIR__ . '/../../assets/uploads/produk/' . $data_lama['foto_produk'])) {
+                unlink(__DIR__ . '/../../assets/uploads/produk/' . $data_lama['foto_produk']);
             }
         }
     }
@@ -47,8 +50,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     stok        = '$stok',
                     satuan      = '$satuan',
                     foto_produk = '$foto_produk'
-                 WHERE id_produk = '$id_produk'";
-
+                  WHERE id_produk = '$id_produk'";
+                  
     if (mysqli_query($conn, $q_update)) {
         $_SESSION['success'] = "Data produk berhasil diperbarui!";
         header("Location: index.php");
@@ -60,6 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 $q_produk = mysqli_query($conn, "SELECT * FROM produk WHERE id_produk = '$id_produk'");
 $produk   = mysqli_fetch_assoc($q_produk);
+
 if (!$produk) { header("Location: index.php"); exit(); }
 
 $kategori_list = mysqli_query($conn, "SELECT * FROM kategori ORDER BY nama_kategori ASC");
@@ -67,9 +71,9 @@ $kategori_list = mysqli_query($conn, "SELECT * FROM kategori ORDER BY nama_kateg
 $page_title = 'Edit Produk';
 $page = 'produk';
 
-include '../../includes/header.php';
-include '../../includes/navbar.php';
-include '../../includes/sidebar.php';
+include __DIR__ . '/../../includes/header.php';
+include __DIR__ . '/../../includes/navbar.php';
+include __DIR__ . '/../../includes/sidebar.php';
 ?>
 
 <div class="main-content" style="background-color:#f8f9fa;min-height:100vh;padding:20px;padding-top:80px;">
@@ -182,7 +186,7 @@ include '../../includes/sidebar.php';
     </div>
 </div>
 
-<?php include '../../includes/footer.php'; ?>
+<?php include __DIR__ . '/../../includes/footer.php'; ?>
 
 <script>
     // ========================= PREVIEW FOTO =========================
@@ -204,4 +208,4 @@ include '../../includes/sidebar.php';
     });
 </script>
     
-<?php include '../../includes/footer_script.php'; ?>
+<?php include __DIR__ . '/../../includes/footer_script.php'; ?>

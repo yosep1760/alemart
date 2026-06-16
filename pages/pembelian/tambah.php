@@ -1,7 +1,7 @@
 <?php
-include '../../auth/auth_check.php';
-require_once '../../config/config.php';
-require_once '../../config/koneksi.php';
+include __DIR__ . '/../../auth/auth_check.php';
+require_once __DIR__ . '/../../config/config.php';
+require_once __DIR__ . '/../../config/koneksi.php';
 
 $page_title = 'Pembelian Baru';
 $page = 'pembelian';
@@ -11,13 +11,14 @@ $supplier_list = mysqli_query($conn, "SELECT * FROM supplier ORDER BY nama_suppl
 $produk_list = mysqli_query($conn, "SELECT id_produk, nama_produk, harga_beli, satuan FROM produk ORDER BY nama_produk ASC");
 
 $produk_data = [];
+
 while ($p = mysqli_fetch_assoc($produk_list)) {
     $produk_data[] = $p;
 }
 
-include '../../includes/header.php';
-include '../../includes/navbar.php';
-include '../../includes/sidebar.php';
+include __DIR__ . '/../../includes/header.php';
+include __DIR__ . '/../../includes/navbar.php';
+include __DIR__ . '/../../includes/sidebar.php';
 ?>
 
 <div class="main-content">
@@ -131,7 +132,7 @@ include '../../includes/sidebar.php';
     </div>
 </div>
 
-<?php include '../../includes/footer.php'; ?>
+<?php include __DIR__ . '/../../includes/footer.php'; ?>
 
 <script>
     let daftarBarang = [];
@@ -229,4 +230,4 @@ include '../../includes/sidebar.php';
     });
 </script>
 
-<?php include '../../includes/footer_script.php'; ?>
+<?php include __DIR__ . '/../../includes/footer_script.php'; ?>

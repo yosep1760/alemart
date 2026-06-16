@@ -1,8 +1,8 @@
 <?php
-require_once '../../config/config.php';
-include '../../auth/auth_check.php';
-include '../../auth/isAdmin.php';
-require_once '../../config/koneksi.php';
+require_once __DIR__ . '/../../config/config.php';
+include __DIR__ . '/../../auth/auth_check.php';
+include __DIR__ . '/../../auth/isAdmin.php';
+require_once __DIR__ . '/../../config/koneksi.php';
 
 $page_title = 'Edit User';
 $page = 'users';
@@ -11,317 +11,115 @@ $page = 'users';
 $id = $_GET['id'];
 $user = $conn->query("SELECT * FROM users WHERE id_user = '$id'")->fetch_object();
 
-include '../../includes/header.php';
-include '../../includes/navbar.php';
-include '../../includes/sidebar.php';
+include __DIR__ . '/../../includes/header.php';
+include __DIR__ . '/../../includes/navbar.php';
+include __DIR__ . '/../../includes/sidebar.php';
 ?>
 
 <div class="main-content">
-
-    <!-- PAGE HEADER -->
     <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
-
         <div>
-
-            <h2 class="fw-bold mb-1">
-                Edit User
-            </h2>
-
-            <p class="text-muted mb-0">
-                Ubah data user di bawah ini
-            </p>
-
+            <h2 class="fw-bold mb-1">Edit User</h2>
+            <p class="text-muted mb-0">Ubah data user di bawah ini</p>
         </div>
-
-        <a href="index.php"
-            class="btn btn-light border">
-
-            <i class="bi bi-arrow-left"></i>
-            Kembali
-
+        <a href="index.php" class="btn btn-light border">
+            <i class="bi bi-arrow-left"></i> Kembali
         </a>
-
     </div>
 
-    <!-- FORM -->
-    <form
-        action="proses_edit.php"
-        method="POST"
-        enctype="multipart/form-data">
-
-        <!-- CARD DATA USER -->
+    <form action="proses_edit.php" method="POST" enctype="multipart/form-data">
         <div class="card border-0 shadow-sm rounded-4 mb-4">
-
             <div class="card-body p-4">
-
                 <div class="d-flex align-items-center gap-2 mb-4">
-
-                    <div class="bg-success bg-opacity-10 text-success rounded-3 d-flex align-items-center justify-content-center"
-                        style="width:44px; height:44px;">
-
+                    <div class="bg-success bg-opacity-10 text-success rounded-3 d-flex align-items-center justify-content-center" style="width:44px; height:44px;">
                         <i class="bi bi-person-plus fs-5"></i>
-
                     </div>
-
                     <div>
-
                         <input type="hidden" name="id_user" value="<?= $user->id_user; ?>">
-                        <h5 class="fw-bold mb-0">
-                            Data User <?= $user->nama; ?>
-                        </h5>
-
-                        <small class="text-muted">
-                            Isi data user dengan benar
-                        </small>
-
+                        <h5 class="fw-bold mb-0">Data User <?= htmlspecialchars($user->nama); ?></h5>
+                        <small class="text-muted">Isi data user dengan benar</small>
                     </div>
-
                 </div>
+
                 <?php if (isset($_SESSION['error'])) : ?>
-
                     <div class="alert alert-danger">
-
                         <?= $_SESSION['error']; ?>
-
                     </div>
-
-                <?php
-                    unset($_SESSION['error']);
-                endif;
-                ?>
-
+                <?php unset($_SESSION['error']); endif; ?>
 
                 <div class="row g-4">
-
-                    <!-- NAMA -->
                     <div class="col-md-6">
-
-                        <label class="form-label fw-semibold">
-                            Nama Lengkap
-                        </label>
-
-                        <input
-                            type="text"
-                            name="nama"
-                            class="form-control"
-                            placeholder="Masukkan nama lengkap"
-                            value="<?= $user->nama; ?>"
-                            required>
-
+                        <label class="form-label fw-semibold">Nama Lengkap</label>
+                        <input type="text" name="nama" class="form-control" placeholder="Masukkan nama lengkap" value="<?= htmlspecialchars($user->nama); ?>" required>
                     </div>
 
-                    <!-- USERNAME -->
                     <div class="col-md-6">
-
-                        <label class="form-label fw-semibold">
-                            Username
-                        </label>
-
-                        <input
-                            type="text"
-                            name="username"
-                            class="form-control"
-                            placeholder="Masukkan username"
-                            value="<?= $user->username; ?>"
-                            required>
-
+                        <label class="form-label fw-semibold">Username</label>
+                        <input type="text" name="username" class="form-control" placeholder="Masukkan username" value="<?= htmlspecialchars($user->username); ?>" required>
                     </div>
 
-                    <!-- PASSWORD -->
                     <div class="col-md-6">
-
-                        <label class="form-label fw-semibold">
-                            Password
-                        </label>
-
+                        <label class="form-label fw-semibold">Password</label>
                         <div class="input-group">
-
-                            <input
-                                type="password"
-                                name="password"
-                                id="password"
-                                class="form-control"
-                                placeholder="Masukkan password"
-                                >
-
-                            <button
-                                class="btn btn-outline-secondary"
-                                type="button"
-                                id="togglePassword">
-
+                            <input type="password" name="password" id="password" class="form-control" placeholder="Masukkan password">
+                            <button class="btn btn-outline-secondary" type="button" id="togglePassword">
                                 <i class="bi bi-eye"></i>
-
                             </button>
-
                         </div>
-                        <small class="text-muted">
-                            Kosongkan jika tidak ingin mengganti password
-                        </small>
+                        <small class="text-muted">Kosongkan jika tidak ingin mengganti password</small>
                     </div>
 
-                    <!-- ROLE -->
                     <div class="col-md-6">
-
-                        <label class="form-label fw-semibold">
-                            Role
-                        </label>
-
-                        <select
-                            name="role"
-                            class="form-select"
-                            required>
-
-                            <option value="">
-                                Pilih Role
-                            </option>
-
-                            <option
-                                value="admin"
-                                <?= ($user->role == 'admin') ? 'selected' : ''; ?>>
-
-                                Admin
-
-                            </option>
-
-                            <option
-                                value="kasir"
-                                <?= ($user->role == 'kasir') ? 'selected' : ''; ?>>
-
-                                Kasir
-
-                            </option>
-
+                        <label class="form-label fw-semibold">Role</label>
+                        <select name="role" class="form-select" required>
+                            <option value="">Pilih Role</option>
+                            <option value="admin" <?= ($user->role == 'admin') ? 'selected' : ''; ?>>Admin</option>
+                            <option value="kasir" <?= ($user->role == 'kasir') ? 'selected' : ''; ?>>Kasir</option>
                         </select>
-
                     </div>
 
-                    <!-- AVATAR -->
                     <div class="col-6">
-
-                        <label class="form-label fw-semibold">
-                            Avatar User
-                        </label>
-
-                        <!-- preview avatar lama -->
+                        <label class="form-label fw-semibold">Avatar User</label>
                         <div class="mb-3">
-
                             <?php if (!empty($user->avatar)): ?>
-
-                                <!-- avatar lama -->
-                                <img
-                                    id="avatarPreview"
-                                    src="<?= BASE_URL; ?>/assets/uploads/avatar/<?= $user->avatar; ?>"
-                                    class="rounded-circle border object-fit-cover"
-                                    style="width: 90px; height: 90px;">
-
-                                <!-- default avatar -->
-                                <div
-                                    id="avatarDefault"
-                                    class="d-none rounded-circle bg-success text-white 
-                                    d-flex align-items-center justify-content-center fw-bold"
-                                    style=" width: 90px; height: 90px; font-size: 2rem; ">
+                                <img id="avatarPreview" src="<?= BASE_URL; ?>/assets/uploads/avatar/<?= htmlspecialchars($user->avatar); ?>" class="rounded-circle border object-fit-cover" style="width: 90px; height: 90px;">
+                                <div id="avatarDefault" class="d-none rounded-circle bg-success text-white d-flex align-items-center justify-content-center fw-bold" style="width: 90px; height: 90px; font-size: 2rem;">
                                     <?= strtoupper(substr($user->nama, 0, 1)); ?>
                                 </div>
-
                             <?php else: ?>
-
-                                <!-- preview image -->
-                                <img id="avatarPreview"
-                                    src=""
-                                    class="rounded-circle border object-fit-cover d-none"
-                                    style=" width: 90px; height: 90px; ">
-
-                                <!-- default avatar -->
-                                <div id="avatarDefault"
-                                    class="rounded-circle bg-success 
-                                text-white d-flex align-items-center 
-                                justify-content-center fw-bold"
-                                    style=" width: 90px; height: 90px; font-size: 2rem; ">
-
+                                <img id="avatarPreview" src="" class="rounded-circle border object-fit-cover d-none" style="width: 90px; height: 90px;">
+                                <div id="avatarDefault" class="rounded-circle bg-success text-white d-flex align-items-center justify-content-center fw-bold" style="width: 90px; height: 90px; font-size: 2rem;">
                                     <?= strtoupper(substr($user->nama, 0, 1)); ?>
-
                                 </div>
-
                             <?php endif; ?>
-
                         </div>
-
-                        <!-- input avatar baru -->
-                        <input
-                            type="file"
-                            name="avatar"
-                            id="avatarInput"
-                            class="form-control"
-                            accept=".jpg,.jpeg,.png">
-
-                        <small class="text-muted">
-                            Kosongkan jika tidak ingin mengganti avatar
-                        </small>
-
+                        <input type="file" name="avatar" id="avatarInput" class="form-control" accept=".jpg,.jpeg,.png">
+                        <small class="text-muted">Kosongkan jika tidak ingin mengganti avatar</small>
                     </div>
-
                 </div>
-
             </div>
-
         </div>
 
-        <!-- ACTION -->
         <div class="d-flex gap-2 justify-content-end">
-
-            <button
-                type="reset"
-                class="btn btn-light border px-4">
-
-                Reset
-
+            <button type="reset" class="btn btn-light border px-4">Reset</button>
+            <button type="submit" class="btn btn-success px-4">
+                <i class="bi bi-check-circle"></i> Simpan Perubahan
             </button>
-
-            <button
-                type="submit"
-                class="btn btn-success px-4">
-
-                <i class="bi bi-check-circle"></i>
-                Simpan Perubahan
-
-            </button>
-
         </div>
-
     </form>
-
 </div>
 
-<?php include '../../includes/footer.php'; ?>
+<?php include __DIR__ . '/../../includes/footer.php'; ?>
 
-<!-- SCRIPT -->
 <script>
-    /* =========================
-           TOGGLE PASSWORD
-        ========================= */
-    const togglePassword =
-        document.getElementById("togglePassword");
-
-    const password =
-        document.getElementById("password");
-
+    const togglePassword = document.getElementById("togglePassword");
+    const password = document.getElementById("password");
     togglePassword.addEventListener("click", () => {
-
-        const type =
-            password.getAttribute("type") === "password" ?
-            "text" :
-            "password";
-
+        const type = password.getAttribute("type") === "password" ? "text" : "password";
         password.setAttribute("type", type);
-
-        togglePassword.innerHTML =
-            type === "password" ?
-            '<i class="bi bi-eye"></i>' :
-            '<i class="bi bi-eye-slash"></i>';
-
+        togglePassword.innerHTML = type === "password" ? '<i class="bi bi-eye"></i>' : '<i class="bi bi-eye-slash"></i>';
     });
 
-    /* ========================= PREVIEW AVATAR EDIT ========================= */
     const avatarInput = document.getElementById('avatarInput');
     const avatarPreview = document.getElementById('avatarPreview');
     const avatarDefault = document.getElementById('avatarDefault');
@@ -339,5 +137,4 @@ include '../../includes/sidebar.php';
     });
 </script>
 
-
-<?php include '../../includes/footer_script.php'; ?>
+<?php include __DIR__ . '/../../includes/footer_script.php'; ?>

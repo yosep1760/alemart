@@ -1,9 +1,10 @@
 <?php
 session_start();
-require_once '../../config/koneksi.php';
+require_once __DIR__ . '/../../config/config.php';
+require_once __DIR__ . '/../../config/koneksi.php';
 
 if (!isset($_SESSION['login'])) {
-    header("Location: ../../index.php");
+    header("Location: " . BASE_URL . "/auth/login.php");
     exit;
 }
 
@@ -16,6 +17,7 @@ $id = (int)$_GET['id'];
 
 // Check if category is used in products
 $cek_produk = mysqli_query($conn, "SELECT id_produk FROM produk WHERE id_kategori = $id");
+
 if (mysqli_num_rows($cek_produk) > 0) {
     $_SESSION['error'] = 'Kategori tidak dapat dihapus karena masih digunakan pada produk!';
     header("Location: index.php");
@@ -32,3 +34,4 @@ if ($query) {
 
 header("Location: index.php");
 exit;
+?>

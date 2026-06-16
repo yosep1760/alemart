@@ -1,7 +1,7 @@
 <?php
-include '../../auth/auth_check.php';
-require_once '../../config/config.php';
-require_once '../../config/koneksi.php';
+include __DIR__ . '/../../auth/auth_check.php';
+require_once __DIR__ . '/../../config/config.php';
+require_once __DIR__ . '/../../config/koneksi.php';
 
 $page_title = 'Daftar Transaksi';
 $page = 'transaksi';
@@ -15,8 +15,8 @@ $offset = ($current_page - 1) * $limit;
 /* ========================= SEARCH & FILTER ========================= */
 $search = isset($_GET['search']) ? trim($_GET['search']) : '';
 $tanggal = isset($_GET['tanggal']) ? trim($_GET['tanggal']) : '';
-
 $where = "WHERE 1=1";
+
 if (!empty($search)) {
     $search_esc = $conn->real_escape_string($search);
     $where .= " AND (u.nama LIKE '%$search_esc%' OR t.id_transaksi LIKE '%$search_esc%')";
@@ -41,9 +41,9 @@ $query = mysqli_query($conn,
      LIMIT $limit OFFSET $offset"
 );
 
-include '../../includes/header.php';
-include '../../includes/navbar.php';
-include '../../includes/sidebar.php';
+include __DIR__ . '/../../includes/header.php';
+include __DIR__ . '/../../includes/navbar.php';
+include __DIR__ . '/../../includes/sidebar.php';
 ?>
 
 <?php if (isset($_SESSION['success'])): ?>
@@ -76,7 +76,6 @@ include '../../includes/sidebar.php';
 
 <div class="main-content">
 
-    <!-- HEADER -->
     <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
         <div>
             <h2 class="fw-bold mb-1">Data Transaksi</h2>
@@ -87,11 +86,9 @@ include '../../includes/sidebar.php';
         </a>
     </div>
 
-    <!-- CARD -->
     <div class="card border-0 shadow-sm rounded-4">
         <div class="card-body">
 
-            <!-- FILTER -->
             <form method="GET" class="row g-3 mb-4" id="filterForm">
                 <div class="col-md-7">
                     <div class="input-group">
@@ -120,7 +117,6 @@ include '../../includes/sidebar.php';
                 </div>
             </form>
 
-            <!-- TABLE -->
             <div class="table-responsive">
                 <table class="table align-middle">
                     <thead>
@@ -163,13 +159,11 @@ include '../../includes/sidebar.php';
                                     </td>
                                     <td>
                                         <div class="d-flex justify-content-center gap-2">
-                                            <!-- DETAIL -->
                                             <a href="detail.php?id=<?= $row['id_transaksi']; ?>"
                                                 class="btn btn-info btn-sm text-white"
                                                 title="Detail">
                                                 <i class="bi bi-eye"></i>
                                             </a>
-                                            <!-- DELETE -->
                                             <?php if ($_SESSION['role'] == 'admin'): ?>
                                                 <button type="button"
                                                     class="btn btn-danger btn-sm btn-delete"
@@ -194,7 +188,6 @@ include '../../includes/sidebar.php';
                 </table>
             </div>
 
-            <!-- PAGINATION -->
             <?php if ($total_pages > 1): ?>
                 <nav class="mt-4">
                     <ul class="pagination justify-content-end">
@@ -214,7 +207,7 @@ include '../../includes/sidebar.php';
     </div>
 </div>
 
-<?php include '../../includes/footer.php'; ?>
+<?php include __DIR__ . '/../../includes/footer.php'; ?>
 
 <script>
     const filterForm = document.getElementById("filterForm");
@@ -226,7 +219,6 @@ include '../../includes/sidebar.php';
         clearTimeout(searchTimer);
         searchTimer = setTimeout(() => filterForm.submit(), 500);
     });
-
     tanggalFilter.addEventListener("change", () => filterForm.submit());
 
     /* ========================= DELETE ========================= */
@@ -252,4 +244,4 @@ include '../../includes/sidebar.php';
     });
 </script>
 
-<?php include '../../includes/footer_script.php'; ?>
+<?php include __DIR__ . '/../../includes/footer_script.php'; ?>

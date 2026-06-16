@@ -1,7 +1,7 @@
 <?php
-include '../../auth/auth_check.php';
-require_once '../../config/config.php';
-require_once '../../config/koneksi.php';
+include __DIR__ . '/../../auth/auth_check.php';
+require_once __DIR__ . '/../../config/config.php';
+require_once __DIR__ . '/../../config/koneksi.php';
 
 // Proteksi, hanya Admin yang boleh membatalkan/menghapus faktur pembelian
 if ($_SESSION['role'] !== 'admin') {
@@ -11,12 +11,14 @@ if ($_SESSION['role'] !== 'admin') {
 }
 
 $id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
+
 if (!$id) {
     header('Location: index.php');
     exit;
 }
 
 $cek = mysqli_fetch_assoc(mysqli_query($conn, "SELECT id_pembelian FROM pembelian WHERE id_pembelian = $id"));
+
 if (!$cek) {
     $_SESSION['error'] = 'Data pembelian tidak ditemukan.';
     header('Location: index.php');
@@ -28,6 +30,7 @@ $conn->begin_transaction();
 try {
     // 1. Ambil data detail barang yang dibeli untuk mengurangi stok produk
     $detail = mysqli_query($conn, "SELECT id_produk, jumlah FROM detail_pembelian WHERE id_pembelian = $id");
+
     while ($d = mysqli_fetch_assoc($detail)) {
         // Kurangi stok karena pembelian dibatalkan/dihapus
         $conn->query("UPDATE produk SET stok = stok - {$d['jumlah']} WHERE id_produk = {$d['id_produk']}");
@@ -48,3 +51,4 @@ try {
 
 header('Location: index.php');
 exit;
+?>

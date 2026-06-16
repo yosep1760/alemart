@@ -1,5 +1,6 @@
 <?php
 session_start();
+require_once __DIR__ . '/../config/config.php';
 ?>
 
 <!DOCTYPE html>
@@ -13,7 +14,7 @@ session_start();
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.css" rel="stylesheet">
 
-    <link rel="stylesheet" href="../assets/css/login.css">
+    <link rel="stylesheet" href="<?= BASE_URL; ?>/assets/css/login.css">
 </head>
 
 <body>
@@ -21,7 +22,6 @@ session_start();
 
         <div class="login-card shadow-lg">
 
-            <!-- FORM -->
             <div class="login-form">
 
                 <div class="mb-4">
@@ -34,9 +34,7 @@ session_start();
                 <?php if (isset($_SESSION['error'])) : ?>
 
                     <div class="alert alert-danger">
-
                         <?= $_SESSION['error']; ?>
-
                     </div>
 
                 <?php
@@ -91,9 +89,7 @@ session_start();
                         type="submit"
                         name="submit"
                         class="btn btn-success w-100">
-
                         Login
-
                     </button>
 
                 </form>
@@ -125,7 +121,7 @@ session_start();
 
     </div>
 
-    <script src="../assets/js/login.js"></script>
+    <script src="<?= BASE_URL; ?>/assets/js/login.js"></script>
 
 </body>
 

@@ -1,7 +1,7 @@
 <?php
-include '../../auth/auth_check.php';
-require_once '../../config/config.php';
-require_once '../../config/koneksi.php';
+include __DIR__ . '/../../auth/auth_check.php';
+require_once __DIR__ . '/../../config/config.php';
+require_once __DIR__ . '/../../config/koneksi.php';
 
 $page_title = 'Daftar Produk';
 $page = 'produk';
@@ -28,6 +28,7 @@ $offset = ($current_page - 1) * $limit;
 // =============================================
 $search = isset($_GET['search']) ? trim($_GET['search']) : '';
 $where  = "WHERE 1=1";
+
 if (!empty($search)) {
     $search_esc = $conn->real_escape_string($search);
     $where .= " AND p.nama_produk LIKE '%$search_esc%'";
@@ -47,9 +48,9 @@ $query = mysqli_query($conn, "
     LIMIT $limit OFFSET $offset
 ");
 
-include '../../includes/header.php';
-include '../../includes/navbar.php';
-include '../../includes/sidebar.php';
+include __DIR__ . '/../../includes/header.php';
+include __DIR__ . '/../../includes/navbar.php';
+include __DIR__ . '/../../includes/sidebar.php';
 ?>
 
 <div class="main-content">
@@ -194,7 +195,7 @@ include '../../includes/sidebar.php';
     </div>
 </div>
 
-<?php include '../../includes/footer.php'; ?>
+<?php include __DIR__ . '/../../includes/footer.php'; ?>
 
 <?php if (isset($_SESSION['success'])): ?>
     <script>
@@ -247,4 +248,4 @@ include '../../includes/sidebar.php';
     });
 </script>
 
-<?php include '../../includes/footer_script.php'; ?>
+<?php include __DIR__ . '/../../includes/footer_script.php'; ?>

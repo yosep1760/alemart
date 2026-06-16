@@ -1,7 +1,7 @@
 <?php
-include '../../auth/auth_check.php';
-require_once '../../config/config.php';
-require_once '../../config/koneksi.php';
+include __DIR__ . '/../../auth/auth_check.php';
+require_once __DIR__ . '/../../config/config.php';
+require_once __DIR__ . '/../../config/koneksi.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: tambah.php');
@@ -43,6 +43,7 @@ try {
         "INSERT INTO detail_transaksi (id_transaksi, id_produk, jumlah, harga_jual, subtotal)
          VALUES (?, ?, ?, ?, ?)"
     );
+
     $stmt_stok = $conn->prepare(
         "UPDATE produk SET stok = stok - ? WHERE id_produk = ? AND stok >= ?"
     );
@@ -57,6 +58,7 @@ try {
         $cek = mysqli_fetch_assoc(mysqli_query($conn,
             "SELECT stok FROM produk WHERE id_produk = $id_produk FOR UPDATE"
         ));
+
         if (!$cek || $cek['stok'] < $jumlah) {
             throw new Exception("Stok produk tidak mencukupi (ID: $id_produk).");
         }
@@ -66,6 +68,7 @@ try {
 
         $stmt_stok->bind_param('iii', $jumlah, $id_produk, $jumlah);
         $stmt_stok->execute();
+
         if ($stmt_stok->affected_rows === 0) {
             throw new Exception("Gagal update stok produk (ID: $id_produk).");
         }
@@ -86,3 +89,4 @@ try {
     header('Location: tambah.php');
     exit;
 }
+?>

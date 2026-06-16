@@ -1,7 +1,7 @@
 <?php
-include '../../auth/auth_check.php';
-require_once '../../config/config.php';
-require_once '../../config/koneksi.php';
+include __DIR__ . '/../../auth/auth_check.php';
+require_once __DIR__ . '/../../config/config.php';
+require_once __DIR__ . '/../../config/koneksi.php';
 
 $page_title = 'Detail Transaksi';
 $page = 'transaksi';
@@ -34,14 +34,13 @@ $detail_query = mysqli_query($conn,
      WHERE dt.id_transaksi = $id"
 );
 
-include '../../includes/header.php';
-include '../../includes/navbar.php';
-include '../../includes/sidebar.php';
+include __DIR__ . '/../../includes/header.php';
+include __DIR__ . '/../../includes/navbar.php';
+include __DIR__ . '/../../includes/sidebar.php';
 ?>
 
 <div class="main-content">
 
-    <!-- HEADER -->
     <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
         <div>
             <h2 class="fw-bold mb-1">Detail Transaksi</h2>
@@ -61,7 +60,6 @@ include '../../includes/sidebar.php';
 
     <div class="row g-4">
 
-        <!-- INFO TRANSAKSI -->
         <div class="col-md-4">
             <div class="card border-0 shadow-sm rounded-4 h-100">
                 <div class="card-body">
@@ -110,7 +108,6 @@ include '../../includes/sidebar.php';
             </div>
         </div>
 
-        <!-- DETAIL PRODUK -->
         <div class="col-md-8">
             <div class="card border-0 shadow-sm rounded-4">
                 <div class="card-body">
@@ -165,5 +162,5 @@ include '../../includes/sidebar.php';
     </div>
 </div>
 
-<?php include '../../includes/footer.php'; ?>
-<?php include '../../includes/footer_script.php'; ?>
+<?php include __DIR__ . '/../../includes/footer.php'; ?>
+<?php include __DIR__ . '/../../includes/footer_script.php'; ?>

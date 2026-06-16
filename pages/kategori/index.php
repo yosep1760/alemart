@@ -1,7 +1,7 @@
 <?php
-include '../../auth/auth_check.php';
-require_once '../../config/config.php';
-require_once '../../config/koneksi.php';
+include __DIR__ . '/../../auth/auth_check.php';
+require_once __DIR__ . '/../../config/config.php';
+require_once __DIR__ . '/../../config/koneksi.php';
 
 $page_title = 'Daftar Kategori';
 $page = 'kategori';
@@ -13,6 +13,7 @@ $offset = ($current_page - 1) * $limit;
 
 $search = isset($_GET['search']) ? trim($_GET['search']) : '';
 $where  = "WHERE 1=1";
+
 if (!empty($search)) {
     $search_esc = $conn->real_escape_string($search);
     $where .= " AND nama_kategori LIKE '%$search_esc%'";
@@ -23,16 +24,15 @@ $total_data  = mysqli_fetch_assoc($total_query)['total'];
 $total_pages = ceil($total_data / $limit);
 
 $query = mysqli_query($conn, "
-    SELECT * 
-    FROM kategori
+    SELECT * FROM kategori
     $where 
     ORDER BY id_kategori DESC 
     LIMIT $limit OFFSET $offset
 ");
 
-include '../../includes/header.php';
-include '../../includes/navbar.php';
-include '../../includes/sidebar.php';
+include __DIR__ . '/../../includes/header.php';
+include __DIR__ . '/../../includes/navbar.php';
+include __DIR__ . '/../../includes/sidebar.php';
 ?>
 
 <div class="main-content">
@@ -53,6 +53,7 @@ include '../../includes/sidebar.php';
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     <?php endif; ?>
+    
     <?php if (isset($_SESSION['error'])): ?>
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
             <?= $_SESSION['error']; unset($_SESSION['error']); ?>
@@ -106,7 +107,7 @@ include '../../includes/sidebar.php';
                                             </a>
                                             <a href="hapus.php?id=<?= $kategori['id_kategori']; ?>"
                                                class="btn btn-danger btn-sm"
-                                               onclick="return confirm('Yakin ingin menghapus kategori ini? Jika sudah digunakan pada produk, data mungkin tidak bisa dihapus.')">
+                                                onclick="return confirm('Yakin ingin menghapus kategori ini? Jika sudah digunakan pada produk, data mungkin tidak bisa dihapus.')">
                                                 <i class="bi bi-trash"></i> Hapus
                                             </a>
                                         </div>
@@ -143,16 +144,17 @@ include '../../includes/sidebar.php';
     </div>
 </div>
 
-<?php include '../../includes/footer.php'; ?>
+<?php include __DIR__ . '/../../includes/footer.php'; ?>
 
 <script>
     const filterForm  = document.getElementById("filterForm");
     const searchInput = document.getElementById("searchInput");
     let searchTimer;
+
     searchInput.addEventListener("input", () => {
         clearTimeout(searchTimer);
         searchTimer = setTimeout(() => filterForm.submit(), 500);
     });
 </script>
 
-<?php include '../../includes/footer_script.php'; ?>
+<?php include __DIR__ . '/../../includes/footer_script.php'; ?>

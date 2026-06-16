@@ -1,9 +1,11 @@
 <?php
-
 session_start();
 
-if (!isset($_SESSION['login'])) {
+// Panggil konfigurasi dengan absolute path __DIR__
+require_once __DIR__ . '/../config/config.php';
 
-    header('Location: ../../auth/login.php');
+if (!isset($_SESSION['login'])) {
+    header('Location: ' . BASE_URL . '/auth/login.php');
     exit;
 }
+?>

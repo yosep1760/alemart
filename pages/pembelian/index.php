@@ -1,7 +1,7 @@
 <?php
-include '../../auth/auth_check.php';
-require_once '../../config/config.php';
-require_once '../../config/koneksi.php';
+include __DIR__ . '/../../auth/auth_check.php';
+require_once __DIR__ . '/../../config/config.php';
+require_once __DIR__ . '/../../config/koneksi.php';
 
 $page_title = 'Data Pembelian';
 $page = 'pembelian';
@@ -9,12 +9,14 @@ $page = 'pembelian';
 /* ========================= PAGINATION ========================= */
 $limit = 10;
 $current_page = isset($_GET['page_num']) ? (int) $_GET['page_num'] : 1;
+
 if ($current_page < 1) $current_page = 1;
 $offset = ($current_page - 1) * $limit;
 
 /* ========================= SEARCH & FILTER ========================= */
 $search = isset($_GET['search']) ? trim($_GET['search']) : '';
 $where = "WHERE 1=1";
+
 if (!empty($search)) {
     $search_esc = $conn->real_escape_string($search);
     $where .= " AND (s.nama_supplier LIKE '%$search_esc%' OR pb.id_pembelian LIKE '%$search_esc%')";
@@ -22,6 +24,7 @@ if (!empty($search)) {
 
 /* ========================= TOTAL DATA ========================= */
 $total_query = mysqli_query($conn, "SELECT COUNT(*) as total FROM pembelian pb JOIN supplier s ON pb.id_supplier = s.id_supplier $where");
+
 $total_data = mysqli_fetch_assoc($total_query)['total'];
 $total_pages = ceil($total_data / $limit);
 
@@ -36,9 +39,9 @@ $query = mysqli_query($conn,
      LIMIT $limit OFFSET $offset"
 );
 
-include '../../includes/header.php';
-include '../../includes/navbar.php';
-include '../../includes/sidebar.php';
+include __DIR__ . '/../../includes/header.php';
+include __DIR__ . '/../../includes/navbar.php';
+include __DIR__ . '/../../includes/sidebar.php';
 ?>
 
 <?php if (isset($_SESSION['success'])): ?>
@@ -143,12 +146,13 @@ include '../../includes/sidebar.php';
     </div>
 </div>
 
-<?php include '../../includes/footer.php'; ?>
+<?php include __DIR__ . '/../../includes/footer.php'; ?>
 
 <script>
     const filterForm = document.getElementById("filterForm");
     const searchInput = document.getElementById("searchInput");
     let searchTimer;
+    
     searchInput.addEventListener("input", () => {
         clearTimeout(searchTimer);
         searchTimer = setTimeout(() => filterForm.submit(), 500);
@@ -175,4 +179,4 @@ include '../../includes/sidebar.php';
         });
     });
 </script>
-<?php include '../../includes/footer_script.php'; ?>
+<?php include __DIR__ . '/../../includes/footer_script.php'; ?>

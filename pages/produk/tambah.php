@@ -1,7 +1,7 @@
 <?php
-include '../../auth/auth_check.php';
-require_once '../../config/config.php';
-require_once '../../config/koneksi.php';
+include __DIR__ . '/../../auth/auth_check.php';
+require_once __DIR__ . '/../../config/config.php';
+require_once __DIR__ . '/../../config/koneksi.php';
 
 // PROTEKSI ROLE: Jika bukan admin, tendang keluar
 if ($_SESSION['role'] !== 'admin') {
@@ -10,7 +10,6 @@ if ($_SESSION['role'] !== 'admin') {
     exit();
 }
 
-// ... sisa kode di bawahnya tetap sama ...
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $nama_produk = mysqli_real_escape_string($conn, $_POST['nama_produk']);
     $id_kategori = (int)$_POST['id_kategori'];
@@ -23,12 +22,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_FILES['foto_produk']) && $_FILES['foto_produk']['error'] === 0) {
         $ekstensi    = pathinfo($_FILES['foto_produk']['name'], PATHINFO_EXTENSION);
         $foto_produk = time() . '_' . uniqid() . '.' . $ekstensi;
-        move_uploaded_file($_FILES['foto_produk']['tmp_name'], '../../assets/uploads/produk/' . $foto_produk);
+        // Perbaikan path upload untuk Vercel
+        move_uploaded_file($_FILES['foto_produk']['tmp_name'], __DIR__ . '/../../assets/uploads/produk/' . $foto_produk);
     }
 
     $q = "INSERT INTO produk (id_kategori, nama_produk, harga_beli, harga_jual, stok, satuan, foto_produk)
           VALUES ('$id_kategori', '$nama_produk', '$harga_beli', '$harga_jual', '$stok', '$satuan', '$foto_produk')";
-
+          
     if (mysqli_query($conn, $q)) {
         $_SESSION['success'] = "Produk baru berhasil ditambahkan!";
         header("Location: index.php");
@@ -43,9 +43,9 @@ $kategori_list = mysqli_query($conn, "SELECT * FROM kategori ORDER BY nama_kateg
 $page_title = 'Tambah Produk';
 $page = 'produk';
 
-include '../../includes/header.php';
-include '../../includes/navbar.php';
-include '../../includes/sidebar.php';
+include __DIR__ . '/../../includes/header.php';
+include __DIR__ . '/../../includes/navbar.php';
+include __DIR__ . '/../../includes/sidebar.php';
 ?>
 
 <div class="main-content" style="background-color:#f8f9fa;min-height:100vh;padding:20px;padding-top:80px;">
@@ -103,7 +103,7 @@ include '../../includes/sidebar.php';
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label fw-semibold text-secondary mb-2" style="font-size:0.9rem;">Harga Jual <span class="text-danger">*</span></label>
+                         <label class="form-label fw-semibold text-secondary mb-2" style="font-size:0.9rem;">Harga Jual <span class="text-danger">*</span></label>
                         <div class="input-group">
                             <span class="input-group-text bg-light border-0 fw-medium">Rp</span>
                             <input type="number" name="harga_jual" class="form-control bg-light border-0 rounded-end-3" placeholder="0" required>
@@ -112,7 +112,7 @@ include '../../includes/sidebar.php';
                 </div>
 
                 <div class="mb-4">
-                    <label class="form-label fw-semibold text-secondary mb-2" style="font-size:0.9rem;">Stok <span class="text-danger">*</span></label>
+                     <label class="form-label fw-semibold text-secondary mb-2" style="font-size:0.9rem;">Stok <span class="text-danger">*</span></label>
                     <input type="number" name="stok" class="form-control bg-light border-0 rounded-3" placeholder="0" required>
                 </div>
 
@@ -146,7 +146,7 @@ include '../../includes/sidebar.php';
     </div>
 </div>
 
-<?php include '../../includes/footer.php'; ?>
+<?php include __DIR__ . '/../../includes/footer.php'; ?>
 
 <script>
     // ========================= VALIDASI FORM =========================
@@ -187,4 +187,4 @@ include '../../includes/sidebar.php';
     });
 </script>
         
-<?php include '../../includes/footer_script.php'; ?>
+<?php include __DIR__ . '/../../includes/footer_script.php'; ?>

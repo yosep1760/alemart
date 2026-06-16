@@ -1,7 +1,7 @@
 <?php
-include '../../auth/auth_check.php';
-require_once '../../config/config.php';
-require_once '../../config/koneksi.php';
+include __DIR__ . '/../../auth/auth_check.php';
+require_once __DIR__ . '/../../config/config.php';
+require_once __DIR__ . '/../../config/koneksi.php';
 
 $page_title = 'Transaksi Baru';
 $page = 'transaksi';
@@ -14,14 +14,15 @@ $produk_query = mysqli_query($conn,
      WHERE p.stok > 0
      ORDER BY p.nama_produk ASC"
 );
+
 $daftar_produk = [];
 while ($p = mysqli_fetch_assoc($produk_query)) {
     $daftar_produk[] = $p;
 }
 
-include '../../includes/header.php';
-include '../../includes/navbar.php';
-include '../../includes/sidebar.php';
+include __DIR__ . '/../../includes/header.php';
+include __DIR__ . '/../../includes/navbar.php';
+include __DIR__ . '/../../includes/sidebar.php';
 ?>
 
 <div class="main-content">
@@ -38,7 +39,6 @@ include '../../includes/sidebar.php';
 
     <div class="row g-4">
 
-        <!-- KIRI: PILIH PRODUK -->
         <div class="col-lg-7">
             <div class="card border-0 shadow-sm rounded-4">
                 <div class="card-body">
@@ -87,7 +87,6 @@ include '../../includes/sidebar.php';
             </div>
         </div>
 
-        <!-- KANAN: KERANJANG -->
         <div class="col-lg-5">
             <div class="card border-0 shadow-sm rounded-4 sticky-top" style="top: calc(var(--navbar-height, 70px) + 16px); z-index: 100;">
                 <div class="card-body">
@@ -126,7 +125,6 @@ include '../../includes/sidebar.php';
     </div>
 </div>
 
-<!-- MODAL KONFIRMASI -->
 <div class="modal fade" id="modalKonfirmasi" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content rounded-4 border-0">
@@ -159,7 +157,6 @@ include '../../includes/sidebar.php';
     </div>
 </div>
 
-<!-- FORM SUBMIT (hidden) -->
 <form method="POST" action="proses_tambah.php" id="formTransaksi">
     <input type="hidden" name="total_harga" id="inputTotal">
     <input type="hidden" name="bayar" id="inputBayarHidden">
@@ -167,7 +164,7 @@ include '../../includes/sidebar.php';
     <input type="hidden" name="items" id="inputItems">
 </form>
 
-<?php include '../../includes/footer.php'; ?>
+<?php include __DIR__ . '/../../includes/footer.php'; ?>
 
 <script>
     let keranjang = [];
@@ -235,7 +232,7 @@ include '../../includes/sidebar.php';
                 <div class="text-end" style="min-width:80px">
                     <div class="fw-bold small">${formatRp(item.harga * item.jumlah)}</div>
                     <button type="button" class="btn btn-link text-danger p-0 small btn-hapus-item" data-idx="${idx}">
-                        <i class="bi bi-trash"></i>
+                         <i class="bi bi-trash"></i>
                     </button>
                 </div>
             </div>
@@ -245,9 +242,11 @@ include '../../includes/sidebar.php';
         list.querySelectorAll('.btn-kurang').forEach(btn => {
             btn.addEventListener('click', () => ubahJumlah(parseInt(btn.dataset.idx), -1));
         });
+
         list.querySelectorAll('.btn-tambah').forEach(btn => {
             btn.addEventListener('click', () => ubahJumlah(parseInt(btn.dataset.idx), 1));
         });
+
         list.querySelectorAll('.btn-hapus-item').forEach(btn => {
             btn.addEventListener('click', () => hapusItem(parseInt(btn.dataset.idx)));
         });
@@ -257,6 +256,7 @@ include '../../includes/sidebar.php';
 
     function ubahJumlah(idx, delta) {
         keranjang[idx].jumlah += delta;
+
         if (keranjang[idx].jumlah <= 0) {
             keranjang.splice(idx, 1);
         } else if (keranjang[idx].jumlah > keranjang[idx].stok) {
@@ -374,4 +374,4 @@ include '../../includes/sidebar.php';
     renderKeranjang();
 </script>
 
-<?php include '../../includes/footer_script.php'; ?>
+<?php include __DIR__ . '/../../includes/footer_script.php'; ?>

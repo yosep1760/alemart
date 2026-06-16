@@ -1,7 +1,7 @@
 <?php
-include '../../auth/auth_check.php';
-require_once '../../config/config.php';
-require_once '../../config/koneksi.php';
+include __DIR__ . '/../../auth/auth_check.php';
+require_once __DIR__ . '/../../config/config.php';
+require_once __DIR__ . '/../../config/koneksi.php';
 
 $page_title = 'Tambah Kategori';
 $page = 'kategori';
@@ -14,10 +14,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         // Cek nama kategori sudah ada belum
         $cek = mysqli_query($conn, "SELECT id_kategori FROM kategori WHERE nama_kategori = '" . $conn->real_escape_string($nama_kategori) . "'");
+        
         if (mysqli_num_rows($cek) > 0) {
             $_SESSION['error'] = 'Nama kategori sudah ada!';
         } else {
             $query = mysqli_query($conn, "INSERT INTO kategori (nama_kategori) VALUES ('" . $conn->real_escape_string($nama_kategori) . "')");
+            
             if ($query) {
                 $_SESSION['sukses'] = 'Kategori berhasil ditambahkan!';
                 header("Location: index.php");
@@ -29,9 +31,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-include '../../includes/header.php';
-include '../../includes/navbar.php';
-include '../../includes/sidebar.php';
+include __DIR__ . '/../../includes/header.php';
+include __DIR__ . '/../../includes/navbar.php';
+include __DIR__ . '/../../includes/sidebar.php';
 ?>
 
 <div class="main-content">
@@ -70,6 +72,6 @@ include '../../includes/sidebar.php';
 </div>
 
 <?php 
-include '../../includes/footer.php';
-include '../../includes/footer_script.php'; 
+include __DIR__ . '/../../includes/footer.php';
+include __DIR__ . '/../../includes/footer_script.php'; 
 ?>

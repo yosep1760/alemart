@@ -1,7 +1,7 @@
 <?php
-include '../../auth/auth_check.php';
-require_once '../../config/config.php';
-require_once '../../config/koneksi.php';
+include __DIR__ . '/../../auth/auth_check.php';
+require_once __DIR__ . '/../../config/config.php';
+require_once __DIR__ . '/../../config/koneksi.php';
 
 $page_title = 'Daftar Supplier';
 $page = 'supplier';
@@ -13,6 +13,7 @@ $offset = ($current_page - 1) * $limit;
 
 $search = isset($_GET['search']) ? trim($_GET['search']) : '';
 $where  = "WHERE 1=1";
+
 if (!empty($search)) {
     $search_esc = $conn->real_escape_string($search);
     $where .= " AND nama_supplier LIKE '%$search_esc%'";
@@ -23,19 +24,17 @@ $total_data  = mysqli_fetch_assoc($total_query)['total'];
 $total_pages = ceil($total_data / $limit);
 
 $query = mysqli_query($conn, "
-    SELECT * 
-    FROM supplier
+    SELECT * FROM supplier
     $where 
     ORDER BY id_supplier DESC 
     LIMIT $limit OFFSET $offset
 ");
 
-include '../../includes/header.php';
-include '../../includes/navbar.php';
-include '../../includes/sidebar.php';
+include __DIR__ . '/../../includes/header.php';
+include __DIR__ . '/../../includes/navbar.php';
+include __DIR__ . '/../../includes/sidebar.php';
 ?>
 
-<!-- POP UP SWEET ALERT SUCCESS & ERROR -->
 <?php if (isset($_SESSION['sukses'])): ?>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -154,12 +153,13 @@ include '../../includes/sidebar.php';
     </div>
 </div>
 
-<?php include '../../includes/footer.php'; ?>
+<?php include __DIR__ . '/../../includes/footer.php'; ?>
 
 <script>
     const filterForm  = document.getElementById("filterForm");
     const searchInput = document.getElementById("searchInput");
     let searchTimer;
+
     searchInput.addEventListener("input", () => {
         clearTimeout(searchTimer);
         searchTimer = setTimeout(() => filterForm.submit(), 500);
@@ -189,4 +189,4 @@ include '../../includes/sidebar.php';
     });
 </script>
 
-<?php include '../../includes/footer_script.php'; ?>
+<?php include __DIR__ . '/../../includes/footer_script.php'; ?>
