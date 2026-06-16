@@ -17,11 +17,11 @@ Sistem Informasi Toko Kelontong merupakan aplikasi berbasis web yang dibuat meng
 
 ## 👥 Anggota Kelompok
 
-- Nama 1 - NPM
-- Nama 2 - NPM
-- Nama 3 - NPM
-- Nama 4 - NPM
-- Nama 5 - NPM
+- Ale Awaludin Walid - 241061170005
+- Muhammad Rafisyah Rizkiyawan - 241061170091
+- Muhammad Rivaldi Yusa - 241061170092
+- Muhammad Zidane Akbari - 241061170094
+- Muhamad Yosep Maulana - 241061170152
 
 ---
 
