@@ -28,6 +28,39 @@ if (!empty($role)) {
     $where .= " AND role = '$role'";
 }
 
+/* --------------------------------- SORTING -------------------------------- */
+$sort = $_GET['sort'] ?? 'terbaru';
+
+switch ($sort) {
+
+    case 'nama_asc':
+        $orderBy = "u.nama ASC";
+        break;
+
+    case 'nama_desc':
+        $orderBy = "u.nama DESC";
+        break;
+
+    case 'transaksi_desc':
+        $orderBy = "total_transaksi DESC";
+        break;
+
+    case 'transaksi_asc':
+        $orderBy = "total_transaksi ASC";
+        break;
+
+    case 'penjualan_desc':
+        $orderBy = "total_penjualan DESC";
+        break;
+
+    case 'penjualan_asc':
+        $orderBy = "total_penjualan ASC";
+        break;
+
+    default:
+        $orderBy = "u.id_user DESC";
+}
+
 /* ========================= TOTAL DATA ========================= */
 $total_query = mysqli_query($conn, "SELECT COUNT(*) as total FROM users $where");
 $total_data = mysqli_fetch_assoc($total_query)['total'];
@@ -36,9 +69,23 @@ $total_pages = ceil($total_data / $limit);
 /* ========================= GET USERS ========================= */
 $query = mysqli_query(
     $conn,
-    "SELECT * FROM users 
-$where ORDER BY id_user DESC LIMIT 
-$limit OFFSET $offset"
+    "SELECT
+        u.*,
+        COUNT(t.id_transaksi) as total_transaksi,
+        COALESCE(SUM(t.total_harga),0) as total_penjualan
+
+    FROM users u
+
+    LEFT JOIN transaksi t
+        ON u.id_user = t.id_user
+
+    $where
+
+    GROUP BY u.id_user
+
+    ORDER BY $orderBy
+
+    LIMIT $limit OFFSET $offset"
 );
 
 include '../../includes/header.php';
@@ -113,7 +160,7 @@ include '../../includes/sidebar.php';
             <form method="GET" class="row g-3 mb-4" id="filterForm">
 
                 <!-- SEARCH -->
-                <div class="col-md-9">
+                <div class="col-md-6">
                     <div class="input-group">
                         <span class="input-group-text bg-white border-end-0">
                             <i class="bi bi-search"></i>
@@ -138,6 +185,50 @@ include '../../includes/sidebar.php';
                         <option value="kasir" <?= ($role == 'kasir') ? 'selected' : ''; ?>> Kasir </option>
                     </select>
                 </div>
+
+                <!-- SELECT SORT -->
+                <div class="col-md-3">
+                    <select
+                        name="sort"
+                        id="sortFilter"
+                        class="form-select">
+
+                        <option value="id_user"
+                            <?= ($sort == 'terbaru') ? 'selected' : ''; ?>>
+                            Terbaru
+                        </option>
+
+                        <option value="nama_asc"
+                            <?= ($sort == 'nama_asc') ? 'selected' : ''; ?>>
+                            Nama A-Z
+                        </option>
+
+                        <option value="nama_desc"
+                            <?= ($sort == 'nama_desc') ? 'selected' : ''; ?>>
+                            Nama Z-A
+                        </option>
+
+                        <option value="transaksi_desc"
+                            <?= ($sort == 'transaksi_desc') ? 'selected' : ''; ?>>
+                            Transaksi Terbanyak
+                        </option>
+
+                        <option value="transaksi_asc"
+                            <?= ($sort == 'transaksi_asc') ? 'selected' : ''; ?>>
+                            Transaksi Terkecil
+                        </option>
+
+                        <option value="penjualan_desc"
+                            <?= ($sort == 'penjualan_desc') ? 'selected' : ''; ?>>
+                            Penjualan Terbesar
+                        </option>
+
+                        <option value="penjualan_asc"
+                            <?= ($sort == 'penjualan_asc') ? 'selected' : ''; ?>>
+                            Penjualan Terkecil
+                        </option>
+                    </select>
+                </div>
             </form>
 
             <!-- TABLE -->
@@ -149,6 +240,7 @@ include '../../includes/sidebar.php';
                             <th>User</th>
                             <th>Username</th>
                             <th>Role</th>
+                            <th>Performa</th>
                             <th class="text-center"> Action </th>
                         </tr>
                     </thead>
@@ -201,6 +293,30 @@ include '../../includes/sidebar.php';
                                         <?= ($user['role'] == 'admin') ? 'bg-success' : 'bg-primary'; ?>">
                                             <?= ucfirst($user['role']); ?>
                                         </span>
+                                    </td>
+
+                                    <td>
+
+                                        <div class="small">
+
+                                            <div class="fw-semibold text-success">
+
+                                                <i class="bi bi-cart-check"></i>
+
+                                                <?= number_format($user['total_transaksi']); ?>
+                                                transaksi
+
+                                            </div>
+
+                                            <div class="text-muted">
+
+                                                Rp
+                                                <?= number_format($user['total_penjualan'], 0, ',', '.'); ?>
+
+                                            </div>
+
+                                        </div>
+
                                     </td>
 
                                     <td>
@@ -291,6 +407,15 @@ include '../../includes/footer.php';
     roleFilter.addEventListener("change", () => {
         filterForm.submit();
     });
+
+    /* =========================
+       SORT BY
+    ========================= */
+    document
+        .getElementById("sortFilter")
+        .addEventListener("change", () => {
+            filterForm.submit();
+        });
 
     /* ========================= DELETE CONFIRMATION ========================= */
     const deleteButtons = document.querySelectorAll('.btn-delete');
