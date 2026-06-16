@@ -36,22 +36,28 @@ if (!password_verify($password, $user['password'])) {
     exit;
 }
 
+// AMANKAN DATA DARI NILAI NULL UNTUK COOKIE PHP 8+
+$c_id       = isset($user['id_user']) ? (string)$user['id_user'] : '';
+$c_nama     = isset($user['nama']) ? (string)$user['nama'] : '';
+$c_username = isset($user['username']) ? (string)$user['username'] : '';
+$c_role     = isset($user['role']) ? (string)$user['role'] : '';
+$c_avatar   = isset($user['avatar']) ? (string)$user['avatar'] : '';
+
 // SIMPAN SESSION (Untuk Local)
-$_SESSION['login'] = true;
-$_SESSION['id_user'] = $user['id_user'];
-$_SESSION['nama'] = $user['nama'];
-$_SESSION['username'] = $user['username'];
-$_SESSION['role'] = $user['role'];
-$_SESSION['avatar'] = $user['avatar'];
+$_SESSION['login']    = true;
+$_SESSION['id_user']  = $c_id;
+$_SESSION['nama']     = $c_nama;
+$_SESSION['username'] = $c_username;
+$_SESSION['role']     = $c_role;
+$_SESSION['avatar']   = $c_avatar;
 
 // SIMPAN COOKIE (Solusi Ampuh untuk Vercel Serverless)
 setcookie('login', 'true', time() + 86400, '/');
-setcookie('id_user', $user['id_user'], time() + 86400, '/');
-setcookie('nama', $user['nama'], time() + 86400, '/');
-setcookie('username', $user['username'], time() + 86400, '/');
-setcookie('role', $user['role'], time() + 86400, '/');
-setcookie('avatar', $user['avatar'], time() + 86400, '/');
+setcookie('id_user', $c_id, time() + 86400, '/');
+setcookie('nama', $c_nama, time() + 86400, '/');
+setcookie('username', $c_username, time() + 86400, '/');
+setcookie('role', $c_role, time() + 86400, '/');
+setcookie('avatar', $c_avatar, time() + 86400, '/');
 
 header('Location: ' . BASE_URL . '/pages/dashboard/index.php');
 exit;
-?>
