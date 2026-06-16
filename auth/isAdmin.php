@@ -9,5 +9,3 @@ if (
     header("Location: " . BASE_URL . "/pages/dashboard/index.php");
     exit;
 }
-
-?>

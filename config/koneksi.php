@@ -18,5 +18,3 @@ mysqli_real_connect($conn, $host, $username, $password, $database, $port, NULL, 
 if (mysqli_connect_errno()) {
     die("Koneksi database gagal: " . mysqli_connect_error());
 }
-
-?>
