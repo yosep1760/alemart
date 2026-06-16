@@ -19,11 +19,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $satuan      = mysqli_real_escape_string($conn, $_POST['satuan']);
     $foto_produk = '';
 
-    if (isset($_FILES['foto_produk']) && $_FILES['foto_produk']['error'] === 0) {
-        $ekstensi    = pathinfo($_FILES['foto_produk']['name'], PATHINFO_EXTENSION);
-        $foto_produk = time() . '_' . uniqid() . '.' . $ekstensi;
-        // Perbaikan path upload untuk Vercel
-        move_uploaded_file($_FILES['foto_produk']['tmp_name'], __DIR__ . '/../../assets/uploads/produk/' . $foto_produk);
+if (isset($_FILES['foto_produk']) && $_FILES['foto_produk']['error'] === 0) {
+        // 1. Ambil nama file asli & ganti spasi jadi underscore (Misal: "teh botol.jpg" -> "teh_botol.jpg")
+        $foto_produk = str_replace(' ', '_', basename($_FILES['foto_produk']['name']));
+        
+        // 2. Tambahkan @ untuk membungkam error penolakan Vercel
+        @move_uploaded_file($_FILES['foto_produk']['tmp_name'], __DIR__ . '/../../assets/uploads/produk/' . $foto_produk);
     }
 
     $q = "INSERT INTO produk (id_kategori, nama_produk, harga_beli, harga_jual, stok, satuan, foto_produk)

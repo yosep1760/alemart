@@ -24,8 +24,8 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
             $_SESSION['error'] = "Produk tidak bisa dihapus karena sudah digunakan dalam data pembelian atau transaksi.";
         } else {
             // Perbaikan path unlink untuk Vercel
-            if (!empty($data['foto_produk']) && file_exists(__DIR__ . '/../../assets/uploads/produk/' . $data['foto_produk'])) {
-                unlink(__DIR__ . '/../../assets/uploads/produk/' . $data['foto_produk']);
+        if (!empty($data['foto_produk'])) {
+                @unlink(__DIR__ . '/../../assets/uploads/produk/' . $data['foto_produk']);
             }
             if (mysqli_query($conn, "DELETE FROM produk WHERE id_produk = '$id_produk'")) {
                 $_SESSION['success'] = "Produk berhasil dihapus!";

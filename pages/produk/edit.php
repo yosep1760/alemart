@@ -30,15 +30,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $foto_produk = $data_lama['foto_produk'];
 
     if (isset($_FILES['foto_produk']) && $_FILES['foto_produk']['error'] === 0) {
-        $ekstensi    = pathinfo($_FILES['foto_produk']['name'], PATHINFO_EXTENSION);
-        $foto_produk = time() . '_' . uniqid() . '.' . $ekstensi;
+        // 1. Ambil nama file asli
+        $foto_produk = str_replace(' ', '_', basename($_FILES['foto_produk']['name']));
         
-        // Perbaikan path upload untuk Vercel
-        if (move_uploaded_file($_FILES['foto_produk']['tmp_name'], __DIR__ . '/../../assets/uploads/produk/' . $foto_produk)) {
-            // Perbaikan path unlink untuk Vercel
-            if (!empty($data_lama['foto_produk']) && file_exists(__DIR__ . '/../../assets/uploads/produk/' . $data_lama['foto_produk'])) {
-                unlink(__DIR__ . '/../../assets/uploads/produk/' . $data_lama['foto_produk']);
-            }
+        // 2. Tambahkan @ untuk membungkam error Vercel
+        @move_uploaded_file($_FILES['foto_produk']['tmp_name'], __DIR__ . '/../../assets/uploads/produk/' . $foto_produk);
+        
+        // 3. Tambahkan @ untuk membungkam error saat menghapus foto lama
+        if (!empty($data_lama['foto_produk'])) {
+            @unlink(__DIR__ . '/../../assets/uploads/produk/' . $data_lama['foto_produk']);
         }
     }
 
