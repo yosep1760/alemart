@@ -1,12 +1,9 @@
 <?php
-session_start();
 require_once __DIR__ . '/../../config/config.php';
 require_once __DIR__ . '/../../config/koneksi.php';
 
-if (!isset($_SESSION['login'])) {
-    header("Location: " . BASE_URL . "/auth/login.php");
-    exit;
-}
+// Panggil file ini agar Cookie Vercel terbaca dan kamu tidak ditendang ke login!
+include __DIR__ . '/../../auth/auth_check.php';
 
 if (!isset($_GET['id'])) {
     header("Location: index.php");
@@ -34,4 +31,3 @@ if ($query) {
 
 header("Location: index.php");
 exit;
-?>

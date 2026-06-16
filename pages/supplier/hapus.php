@@ -1,7 +1,9 @@
 <?php
-include __DIR__ . '/../../auth/auth_check.php';
 require_once __DIR__ . '/../../config/config.php';
 require_once __DIR__ . '/../../config/koneksi.php';
+
+// Panggil file ini agar Cookie Vercel terbaca!
+include __DIR__ . '/../../auth/auth_check.php';
 
 if (!isset($_GET['id'])) {
     header("Location: index.php");
@@ -29,4 +31,3 @@ if ($query) {
 
 header("Location: index.php");
 exit;
-?>
