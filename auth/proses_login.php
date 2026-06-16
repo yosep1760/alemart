@@ -54,3 +54,4 @@ setcookie('avatar', $user['avatar'], time() + 86400, '/');
 
 header('Location: ' . BASE_URL . '/pages/dashboard/index.php');
 exit;
+?>
