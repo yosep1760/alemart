@@ -61,7 +61,7 @@ try {
             throw new Exception("Stok produk tidak mencukupi (ID: $id_produk).");
         }
 
-        $stmt_detail->bind_param('iidd', $id_transaksi, $id_produk, $jumlah, $harga, $subtotal);
+        $stmt_detail->bind_param('iiidd', $id_transaksi, $id_produk, $jumlah, $harga, $subtotal);
         $stmt_detail->execute();
 
         $stmt_stok->bind_param('iii', $jumlah, $id_produk, $jumlah);
