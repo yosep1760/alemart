@@ -1,4 +1,5 @@
 <?php
+// 1. MEMANGGIL FILE WAJIB
 include __DIR__ . '/../../auth/auth_check.php';
 require_once __DIR__ . '/../../config/config.php';
 require_once __DIR__ . '/../../config/koneksi.php';
@@ -6,39 +7,49 @@ require_once __DIR__ . '/../../config/koneksi.php';
 $page_title = 'Data Pembelian';
 $page = 'pembelian';
 
-/* ========================= PAGINATION ========================= */
-$limit = 10;
-$current_page = isset($_GET['page_num']) ? (int) $_GET['page_num'] : 1;
-
+/* =========================================================
+   2. PENGATURAN HALAMAN (PAGINATION)
+========================================================= */
+$limit = 10; // Maksimal 10 baris riwayat pembelian per halaman
+$current_page = isset($_GET['page_num']) ? (int) $_GET['page_num'] : 1; // Ambil halaman saat ini
 if ($current_page < 1) $current_page = 1;
-$offset = ($current_page - 1) * $limit;
+$offset = ($current_page - 1) * $limit; // Menentukan titik awal data yang diambil
 
-/* ========================= SEARCH & FILTER ========================= */
+/* =========================================================
+   3. PENGATURAN PENCARIAN (SEARCH)
+========================================================= */
 $search = isset($_GET['search']) ? trim($_GET['search']) : '';
-$where = "WHERE 1=1";
+$where = "WHERE 1=1"; // Dasar kondisi (biar gampang tambah AND)
 
 if (!empty($search)) {
     $search_esc = $conn->real_escape_string($search);
+    // Mencari berdasarkan NAMA SUPPLIER (diambil dari tabel s) ATAU ID PEMBELIAN (diambil dari tabel pb)
     $where .= " AND (s.nama_supplier LIKE '%$search_esc%' OR pb.id_pembelian LIKE '%$search_esc%')";
 }
 
-/* ========================= TOTAL DATA ========================= */
+/* =========================================================
+   4. MENGHITUNG TOTAL DATA UNTUK TOMBOL HALAMAN
+========================================================= */
+// Karena kita mencari nama_supplier, kita harus menggabungkan (JOIN) tabel pembelian (pb) dan tabel supplier (s)
 $total_query = mysqli_query($conn, "SELECT COUNT(*) as total FROM pembelian pb JOIN supplier s ON pb.id_supplier = s.id_supplier $where");
-
 $total_data = mysqli_fetch_assoc($total_query)['total'];
 $total_pages = ceil($total_data / $limit);
 
-/* ========================= GET PEMBELIAN ========================= */
+/* =========================================================
+   5. MENGAMBIL DATA RIWAYAT PEMBELIAN (TEKNIK JOIN)
+========================================================= */
+// Di sini kita mengambil data dari 3 tabel sekaligus: Pembelian (pb), Supplier (s), dan Users (u)
 $query = mysqli_query($conn,
     "SELECT pb.*, s.nama_supplier, u.nama AS nama_admin
      FROM pembelian pb
      JOIN supplier s ON pb.id_supplier = s.id_supplier
      JOIN users u ON pb.id_user = u.id_user
      $where
-     ORDER BY pb.tanggal_pembelian DESC
+     ORDER BY pb.tanggal_pembelian DESC /* Urutkan dari riwayat pembelian paling baru (DESC) */
      LIMIT $limit OFFSET $offset"
 );
 
+// Memanggil template atas
 include __DIR__ . '/../../includes/header.php';
 include __DIR__ . '/../../includes/navbar.php';
 include __DIR__ . '/../../includes/sidebar.php';
@@ -73,6 +84,7 @@ include __DIR__ . '/../../includes/sidebar.php';
 
     <div class="card border-0 shadow-sm rounded-4">
         <div class="card-body">
+            
             <form method="GET" class="row g-3 mb-4" id="filterForm">
                 <div class="col-md-9">
                     <div class="input-group">
@@ -101,16 +113,23 @@ include __DIR__ . '/../../includes/sidebar.php';
                             <?php $no = $offset + 1; while ($row = mysqli_fetch_assoc($query)): ?>
                                 <tr>
                                     <td><?= $no++; ?></td>
+                                    
                                     <td><span class="fw-semibold text-primary">#<?= str_pad($row['id_pembelian'], 5, '0', STR_PAD_LEFT); ?></span></td>
+                                    
                                     <td class="fw-semibold"><?= htmlspecialchars($row['nama_supplier']); ?></td>
+                                    
                                     <td><?= date('d M Y, H:i', strtotime($row['tanggal_pembelian'])); ?></td>
+                                    
                                     <td><?= htmlspecialchars($row['nama_admin']); ?></td>
+                                    
                                     <td class="fw-semibold">Rp <?= number_format($row['total_pembelian'], 0, ',', '.'); ?></td>
+                                    
                                     <td>
                                         <div class="d-flex justify-content-center gap-2">
                                             <a href="detail.php?id=<?= $row['id_pembelian']; ?>" class="btn btn-info btn-sm text-white" title="Detail">
                                                 <i class="bi bi-eye"></i>
                                             </a>
+                                            
                                             <?php if ($_SESSION['role'] == 'admin'): ?>
                                                 <button type="button" class="btn btn-danger btn-sm btn-delete" data-id="<?= $row['id_pembelian']; ?>" title="Hapus">
                                                     <i class="bi bi-trash"></i>
@@ -149,20 +168,22 @@ include __DIR__ . '/../../includes/sidebar.php';
 <?php include __DIR__ . '/../../includes/footer.php'; ?>
 
 <script>
+    // 1. Auto Search (Cari tanpa klik tombol)
     const filterForm = document.getElementById("filterForm");
     const searchInput = document.getElementById("searchInput");
     let searchTimer;
-    
     searchInput.addEventListener("input", () => {
         clearTimeout(searchTimer);
-        searchTimer = setTimeout(() => filterForm.submit(), 500);
+        searchTimer = setTimeout(() => filterForm.submit(), 500); // Tunggu 500ms
     });
 
+    // 2. Konfirmasi Hapus Pembelian
     document.querySelectorAll('.btn-delete').forEach(button => {
         button.addEventListener('click', function () {
             const id = this.dataset.id;
             Swal.fire({
                 title: 'Hapus Pembelian?',
+                // Peringatan penting: Jika riwayat ini dihapus, stok barang akan ditarik mundur (dikurangi)!
                 text: `Menghapus data ini juga akan MENGURANGI KEMBALI stok produk yang sudah masuk. Lanjutkan?`,
                 icon: 'warning',
                 showCancelButton: true,

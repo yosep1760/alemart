@@ -1,34 +1,59 @@
 <?php
+// 1. MEMANGGIL FILE WAJIB (Proteksi & Koneksi)
+// Memastikan hanya user yang sudah login yang bisa membuka halaman ini
 include __DIR__ . '/../../auth/auth_check.php';
+// Memanggil pengaturan dasar seperti BASE_URL
 require_once __DIR__ . '/../../config/config.php';
+// Memanggil koneksi database agar bisa menyimpan data
 require_once __DIR__ . '/../../config/koneksi.php';
 
+// Menentukan judul halaman di tab browser
 $page_title = 'Tambah Supplier';
+// Menandai menu 'supplier' agar menyala di sidebar kiri
 $page = 'supplier';
 
+// ==========================================
+// 2. LOGIKA PENYIMPANAN DATA (Jika tombol Simpan ditekan)
+// ==========================================
+// Mengecek apakah halaman ini sedang menerima kiriman data dari form (metode POST)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    
+    // Mengambil data yang diisi user di dalam form HTML di bawah.
+    // Fungsi trim() digunakan untuk memotong spasi kosong tidak sengaja di awal/akhir kata.
     $nama_supplier = trim($_POST['nama_supplier']);
     $no_telp       = trim($_POST['no_telp']);
     $alamat        = trim($_POST['alamat']);
 
+    // Validasi 1: Memastikan tidak ada kotak isian yang dibiarkan kosong
     if (empty($nama_supplier) || empty($no_telp) || empty($alamat)) {
+        // Jika ada yang kosong, buat pesan error untuk ditampilkan nanti
         $_SESSION['error'] = 'Semua field wajib diisi!';
     } else {
+        // Validasi 2: Keamanan Database (Mencegah SQL Injection)
+        // Fungsi real_escape_string akan menetralisir karakter bahaya seperti tanda kutip (')
+        // Contoh: Jika user mengetik nama supplier "PT. Jum'at", tanda kutipnya tidak akan merusak sistem database.
         $nama_esc = $conn->real_escape_string($nama_supplier);
         $telp_esc = $conn->real_escape_string($no_telp);
         $alamat_esc = $conn->real_escape_string($alamat);
 
+        // Menjalankan perintah SQL untuk MENAMBAH (INSERT) data ke tabel 'supplier'
         $query = mysqli_query($conn, "INSERT INTO supplier (nama_supplier, no_telp, alamat) VALUES ('$nama_esc', '$telp_esc', '$alamat_esc')");
+
+        // Mengecek apakah perintah penambahan data di atas berhasil dijalankan database
         if ($query) {
+            // Jika berhasil, buat pesan sukses
             $_SESSION['sukses'] = 'Supplier berhasil ditambahkan!';
+            // Lemparkan (redirect) user kembali ke halaman daftar supplier (index.php)
             header("Location: index.php");
-            exit;
+            exit; // Hentikan script di sini agar tidak memuat kode di bawahnya
         } else {
+            // Jika gagal (misal server down), buat pesan error
             $_SESSION['error'] = 'Gagal menambahkan supplier!';
         }
     }
 }
 
+// 3. MEMANGGIL TAMPILAN ATAS (Template)
 include __DIR__ . '/../../includes/header.php';
 include __DIR__ . '/../../includes/navbar.php';
 include __DIR__ . '/../../includes/sidebar.php';
@@ -54,7 +79,9 @@ include __DIR__ . '/../../includes/sidebar.php';
 
     <div class="card border-0 shadow-sm rounded-4">
         <div class="card-body p-4">
+            
             <form method="POST" action="">
+                
                 <div class="mb-3">
                     <label for="nama_supplier" class="form-label fw-semibold">Nama Supplier <span class="text-danger">*</span></label>
                     <input type="text" class="form-control" id="nama_supplier" name="nama_supplier" placeholder="Contoh: PT Indofood CBP" required>
@@ -76,6 +103,7 @@ include __DIR__ . '/../../includes/sidebar.php';
                         <i class="bi bi-save"></i> Simpan Data
                     </button>
                 </div>
+                
             </form>
         </div>
     </div>
